@@ -1,0 +1,39 @@
+# Python bytecode:
+*.py[co]
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.swp
+*~
+
+# SQLite3 database files:
+*.db
+
+# Logs:
+*.log
+
+# Mac Specific:
+.DS_Store
+
+# PyCharm
+.idea/
+
+# Used to track versions in distributions
+RELEASE-VERSION
+
+# Sphinx related
+docs/_build/
+
+#Flycheck crap
+*flycheck*
+
+# nose --with-id tracking file
+.noseids
+
+# local settings
+nols_website/nols_cms/settings/local.py
+/node_modules
+/build
+/client/static_scss/_static_url.scss
