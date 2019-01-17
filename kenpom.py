@@ -29,6 +29,16 @@ KenPom = namedtuple('KenPom', [
     'sos_non_conf', 'sos_non_conf_rank',
 ])
 
+def main():
+    """Get args, fetch data, filter data, display data"""
+    args = sys.argv[1] if len(sys.argv) == 2 else None
+    conferences = args or input('Conference list: ') or 'ALL'
+    conferences = [c.upper() for c in conferences.split(',')]
+    page_content = fetch_content(URL)
+    all_data = parse_data(page_content)
+    data, meta_data = filter_data(all_data, conferences)
+    write_to_console(data, meta_data)
+
 
 def fetch_content(url):
     """Fetch the HTML content from the URL."""
@@ -94,17 +104,6 @@ def write_to_console(data, meta_data):
             conf=team.conf.text if show_conf else ''
         ))
     return data, meta_data
-
-
-def main():
-    """Get args, fetch data, filter data, display data"""
-    args = sys.argv[1] if len(sys.argv) == 2 else None
-    conferences = args or input('Conference list: ') or 'ALL'
-    conferences = [c.upper() for c in conferences.split(',')]
-    page_content = fetch_content(URL)
-    all_data = parse_data(page_content)
-    data, meta_data = filter_data(all_data, conferences)
-    write_to_console(data, meta_data)
 
 
 if __name__ == '__main__':
