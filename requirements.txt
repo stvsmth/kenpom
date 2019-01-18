@@ -1,2 +1,5 @@
 requests>=2.21.0
 beautifulsoup4>=4.7.0
+
+# dev
+pytest==4.1.1
