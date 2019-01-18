@@ -4,7 +4,6 @@
 Scrape KenPom data for quick display.
 
 TODO:
-* Decompose the BS `TAG` data into data (eg team.name.text => team.name).
 * Documentation of inputs (ALL, comma-delimited, etc)
 * Allow for displaying up to N (top 25, 100 etc).
 * Provide some kind of configuration object to drive display of columns.
@@ -23,14 +22,16 @@ import requests
 URL = 'https://kenpom.com/'
 DATA_ROW_COL_COUNT = 22
 KenPom = namedtuple('KenPom', [
-    'Empty', 'rank', 'name', 'conf', 'record', 'eff_margin', 'offense', 'off_rank', 'defense', 'def_rank',
+    'rank', 'name', 'conf', 'record', 'eff_margin', 'offense', 'off_rank', 'defense', 'def_rank',
     'tempo', 'tempo_rank', 'luck', 'luck_rank',
     'sos_eff_margin', 'sos_eff_margin_rank', 'sos_off', 'sos_off_rank', 'sos_def', 'sos_def_rank',
     'sos_non_conf', 'sos_non_conf_rank',
 ])
 
+
 def main():
     """Get args, fetch data, filter data, display data"""
+
     args = sys.argv[1] if len(sys.argv) == 2 else None
     conferences = args or input('Conference list: ') or 'ALL'
     conferences = [c.upper() for c in conferences.split(',')]
@@ -52,7 +53,13 @@ def fetch_content(url):
 
 
 def parse_data(html_content):
-    """Parse raw HTML into a more useful data structure."""
+    """Parse raw HTML into a more useful data structure.
+
+    Note: The parse data currently returns all strings. For now we're just ingesting
+    the data and printing in different format(s). At some point in the future we may
+    type the data, such that the `rank` data item is an integer, the efficiency
+    margin data is float, etc.
+    """
 
     soup = BeautifulSoup(html_content, 'html.parser', parse_only=SoupStrainer('tr'))
     data = []
@@ -63,6 +70,8 @@ def parse_data(html_content):
         # We're relying on the fact that data-based rows have 22 cols and header rows do not
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
+        # Note, this will strip out any "blank" column as well (such as the first column)
+        elements = [e.text for e in elements if hasattr(e, 'text')]
         data.append(KenPom(*elements))
 
     return data
@@ -77,8 +86,8 @@ def filter_data(data, conf):
     max_name_len = 4
     filtered_data = []
     for team in data:
-        if conf == ['ALL'] or team.conf.text in conf:
-            curr_team_len = len(team.name.text) + 1
+        if conf == ['ALL'] or team.conf in conf:
+            curr_team_len = len(team.name) + 1
             max_name_len = curr_team_len if curr_team_len > max_name_len else max_name_len
             filtered_data.append(team)
 
@@ -98,10 +107,10 @@ def write_to_console(data, meta_data):
     for team in data:
         print('{team:>{len}} {rank:>5} {record:>6}  {conf}'.format(
             len=meta_data['max_name_len'],
-            team=team.name.text.replace('.', ''),  # dot in University St. looks funny in right-justified output
-            rank=team.rank.text,
-            record=team.record.text,
-            conf=team.conf.text if show_conf else ''
+            team=team.name.replace('.', ''),  # dot in University St. looks funny in right-justified output
+            rank=team.rank,
+            record=team.record,
+            conf=team.conf if show_conf else ''
         ))
     return data, meta_data
 
