@@ -1,4 +1,27 @@
-from kenpom import parse_data
+"""
+Tests for kenpom scraping, using locally stored data
+
+Expected Output for ACC
+           Virginia     1   15-0
+               Duke     2   14-2
+      Virginia Tech     7   14-1
+     North Carolina     9   12-4
+  North Carolina St    23   14-2
+         Louisville    25   11-5
+         Florida St    26   13-4
+           Syracuse    35   12-5
+            Clemson    47   10-6
+       Georgia Tech    62   10-6
+         Pittsburgh    68   12-5
+           Miami FL    69    9-7
+         Notre Dame    80   11-5
+     Boston College   119    9-6
+        Wake Forest   161    7-8
+
+"""
+
+from captured_output import captured_output
+from kenpom import parse_data, filter_data, write_to_console
 
 
 def mock_fetch_content():
@@ -51,3 +74,24 @@ def test_parse_data():
     assert 'Butler' == all_data[40].name
     assert '41' == all_data[40].rank
     assert '65' == all_data[40].sos_non_conf_rank
+
+
+def test_write_to_console():
+    page_content = mock_fetch_content()
+    all_data = parse_data(page_content)
+    data, meta_data = filter_data(all_data, ['ACC'])
+
+    with captured_output() as (out, err):
+        write_to_console(data, meta_data)
+        out_text = out.getvalue()
+
+        # Check formatting, values, be sure to test team > #20
+        # so we know that we're bypassing the intermittent headers
+        assert '     Virginia     1   15-0' in out_text
+        assert 'Virginia Tech     7   14-1' in out_text
+        assert '  Wake Forest   161    7-8' in out_text
+
+        # Quick check to see if we hav only ACC
+        assert 'Gonzaga' not in out_text
+        assert 'Michigan' not in out_text
+        assert 'Texas' not in out_text
