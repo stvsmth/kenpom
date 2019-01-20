@@ -85,13 +85,11 @@ def test_write_to_console():
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
+        acc_teams = out_text.strip().split('\n')
+        assert 15 == len(acc_teams), 'Conference filter broken'
+
         # Check formatting, values, be sure to test team > #20
         # so we know that we're bypassing the intermittent headers
         assert '     Virginia     1   15-0' in out_text
         assert 'Virginia Tech     7   14-1' in out_text
         assert '  Wake Forest   161    7-8' in out_text
-
-        # Quick check to see if we hav only ACC
-        assert 'Gonzaga' not in out_text
-        assert 'Michigan' not in out_text
-        assert 'Texas' not in out_text
