@@ -85,15 +85,15 @@ def test_write_to_console():
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
-        acc_teams = out_text.strip().split('\n')
-        assert 15 == len(acc_teams), 'Conference filter broken'
+    acc_teams = out_text.strip().split('\n')
+    assert 15 == len(acc_teams), 'Conference filter broken'
 
-        # Check formatting, values, be sure to test team > #20
-        # so we know that we're bypassing the intermittent headers
-        # include longest (NCST) and short team names (Duke), which
-        # define width of output.
-        assert '           Virginia     1   15-0' in out_text
-        assert '               Duke     2   14-2' in out_text
-        assert '      Virginia Tech     7   14-1' in out_text
-        assert '  North Carolina St    23   14-2' in out_text
-        assert '        Wake Forest   161    7-8' in out_text
+    # Check formatting, values, be sure to test team > #20
+    # so we know that we're bypassing the intermittent headers
+    # include longest (NCST) and short team names (Duke), which
+    # define width of output.
+    assert '           Virginia     1   15-0' in out_text
+    assert '               Duke     2   14-2' in out_text
+    assert '      Virginia Tech     7   14-1' in out_text
+    assert '  North Carolina St    23   14-2' in out_text
+    assert '        Wake Forest   161    7-8' in out_text
