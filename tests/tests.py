@@ -90,6 +90,10 @@ def test_write_to_console():
 
         # Check formatting, values, be sure to test team > #20
         # so we know that we're bypassing the intermittent headers
-        assert '     Virginia     1   15-0' in out_text
-        assert 'Virginia Tech     7   14-1' in out_text
-        assert '  Wake Forest   161    7-8' in out_text
+        # include longest (NCST) and short team names (Duke), which
+        # define width of output.
+        assert '           Virginia     1   15-0' in out_text
+        assert '               Duke     2   14-2' in out_text
+        assert '      Virginia Tech     7   14-1' in out_text
+        assert '  North Carolina St    23   14-2' in out_text
+        assert '        Wake Forest   161    7-8' in out_text
