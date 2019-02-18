@@ -2,22 +2,24 @@
 Tests for kenpom scraping, using locally stored data
 
 Expected Output for ACC
-           Virginia     1   15-0
-               Duke     2   14-2
-      Virginia Tech     7   14-1
-     North Carolina     9   12-4
-  North Carolina St    23   14-2
-         Louisville    25   11-5
-         Florida St    26   13-4
-           Syracuse    35   12-5
-            Clemson    47   10-6
-       Georgia Tech    62   10-6
-         Pittsburgh    68   12-5
-           Miami FL    69    9-7
-         Notre Dame    80   11-5
-     Boston College   119    9-6
-        Wake Forest   161    7-8
 
+               Duke     1   23-2
+           Virginia     2   22-2
+     North Carolina     8   20-5
+      Virginia Tech    12   20-5
+         Louisville    14   18-8
+         Florida St    20   20-5
+            Clemson    30  15-10
+  North Carolina St    35   18-8
+           Syracuse    43   17-8
+           Miami FL    74  11-14
+         Notre Dame    79  13-12
+         Pittsburgh    81  12-14
+       Georgia Tech   109  11-15
+     Boston College   112  13-11
+        Wake Forest   187   9-15
+
+Data includes 17 of 18 games played on Sunday, February 17
 """
 
 from captured_output import captured_output
