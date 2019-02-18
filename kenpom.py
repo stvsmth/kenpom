@@ -36,8 +36,8 @@ def main():
     conferences = args or input('Conference list: ') or 'ALL'
     conferences = [c.upper() for c in conferences.split(',')]
     page_content = fetch_content(URL)
-    all_data = parse_data(page_content)
-    data, meta_data = filter_data(all_data, conferences)
+    all_data, as_of = parse_data(page_content)
+    data, meta_data = filter_data(all_data, conferences, as_of)
     write_to_console(data, meta_data)
 
 
@@ -61,6 +61,9 @@ def parse_data(html_content):
     margin data is float, etc.
     """
 
+    as_of_html = BeautifulSoup(html_content, 'html.parser').find_all(class_="update")
+    as_of = as_of_html[0].text if as_of_html else ''
+
     soup = BeautifulSoup(html_content, 'html.parser', parse_only=SoupStrainer('tr'))
     data = []
     for row in soup:
@@ -74,10 +77,10 @@ def parse_data(html_content):
         elements = [e.text for e in elements if hasattr(e, 'text')]
         data.append(KenPom(*elements))
 
-    return data
+    return data, as_of
 
 
-def filter_data(data, conf):
+def filter_data(data, conf, as_of):
     """Filter data before we display.
 
     Currently only filters by conference, may add filtering by Top 25/100,
@@ -95,6 +98,7 @@ def filter_data(data, conf):
         'conf_filter': conf,
         'max_name_len': max_name_len,
         'num_teams': len(filtered_data),
+        'as_of': as_of
     }
     return filtered_data, meta_data
 
@@ -112,6 +116,8 @@ def write_to_console(data, meta_data):
             record=team.record,
             conf=team.conf if show_conf else ''
         ))
+    print()  # provide white-space around output
+    print(meta_data['as_of'])
     return data, meta_data
 
 
