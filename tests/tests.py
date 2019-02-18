@@ -27,6 +27,7 @@ from kenpom import parse_data, filter_data, write_to_console
 
 
 NUM_ACC_TEAMS = 15
+NUM_AMER_TEAMS = 12
 
 
 def mock_fetch_content():
@@ -81,7 +82,20 @@ def test_parse_data():
     assert '185' == all_data[40].sos_non_conf_rank
 
 
-def test_write_to_console():
+def test_filter_data_conf_capitalization():
+    page_content = mock_fetch_content()
+    all_data, as_of = parse_data(page_content)
+    data, _ = filter_data(all_data, ['amer'], as_of)
+
+    # Test using `amer` since KenPom doesn't capitalize all conference names
+    # (only the acronyms, which are most ... eg American Athletic Conference
+    # is displayed as `Amer`.
+    assert len(data) == NUM_AMER_TEAMS
+    assert data[0].name == 'Houston'
+    assert data[1].name == 'Cincinnati'
+
+
+def test_write_to_console_basic_conference():
     page_content = mock_fetch_content()
     all_data, as_of = parse_data(page_content)
     data, meta_data = filter_data(all_data, ['ACC'], as_of)

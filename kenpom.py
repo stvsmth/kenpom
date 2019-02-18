@@ -34,7 +34,7 @@ def main():
 
     args = sys.argv[1] if len(sys.argv) == 2 else None
     conferences = args or input('Conference list: ') or 'ALL'
-    conferences = [c.upper() for c in conferences.split(',')]
+    conferences = conferences.split(',')
     page_content = fetch_content(URL)
     all_data, as_of = parse_data(page_content)
     data, meta_data = filter_data(all_data, conferences, as_of)
@@ -88,8 +88,9 @@ def filter_data(data, conf, as_of):
     """
     max_name_len = 4
     filtered_data = []
+    conf = [c.upper() for c in conf]
     for team in data:
-        if conf == ['ALL'] or team.conf in conf:
+        if conf == ['ALL'] or team.conf.upper() in conf:
             curr_team_len = len(team.name) + 1
             max_name_len = curr_team_len if curr_team_len > max_name_len else max_name_len
             filtered_data.append(team)
