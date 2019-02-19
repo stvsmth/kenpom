@@ -4,8 +4,7 @@
 Scrape KenPom data for quick display.
 
 TODO:
-* Documentation of inputs (ALL, comma-delimited, etc)
-* Allow for displaying up to N (top 25, 100 etc).
+* Documentation of inputs (ALL; 25; 50; ACC; acc,b10;  etc)
 * Provide some kind of configuration object to drive display of columns.
   Probably have a `filter_data` method that takes display config (which
   rows (conf, top 25) and columns (team, rank, W-L, etc) and returns
@@ -20,6 +19,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
 URL = 'https://kenpom.com/'
+MAX_TEAMS = 500  # it's actually more like 353, but we don't care
 DATA_ROW_COL_COUNT = 22
 KenPom = namedtuple('KenPom', [
     'rank', 'name', 'conf', 'record', 'eff_margin', 'offense', 'off_rank', 'defense', 'def_rank',
@@ -80,26 +80,54 @@ def parse_data(html_content):
     return data, as_of
 
 
+def _get_filters(conf):
+    """Return filters based on user input.
+
+    This is a brute force not-so-pretty way of handling
+    top-N filters along with conference-based filters.
+
+    We'll clean this up in the future.
+    """
+
+    conf = [c.upper() for c in conf]
+    try:
+        top_filter = int(conf[0])
+        do_all = False
+        assert top_filter >= 1, "Must use a positive integer"
+    except ValueError:
+        top_filter = None
+        do_all = True if conf[0] == 'ALL' else False
+
+    return conf, top_filter, do_all
+
+
 def filter_data(data, conf, as_of):
     """Filter data before we display.
 
     Currently only filters by conference, may add filtering by Top 25/100,
     columns (config which columnar data is displayed).
     """
+
+    conf, top_filter, do_all = _get_filters(conf)
     max_name_len = 4
     filtered_data = []
-    conf = [c.upper() for c in conf]
+
     for team in data:
-        if conf == ['ALL'] or team.conf.upper() in conf:
+        if do_all or top_filter or team.conf.upper() in conf:
             curr_team_len = len(team.name) + 1
             max_name_len = curr_team_len if curr_team_len > max_name_len else max_name_len
             filtered_data.append(team)
 
+            if len(filtered_data) == top_filter:
+                break
+    show_conf = True if len(conf) > 1 or top_filter is not None else False
     meta_data = {
+        'as_of': as_of,
         'conf_filter': conf,
         'max_name_len': max_name_len,
         'num_teams': len(filtered_data),
-        'as_of': as_of
+        'show_conf': show_conf,
+        'top_filter': top_filter,
     }
     return filtered_data, meta_data
 
@@ -108,14 +136,13 @@ def write_to_console(data, meta_data):
     """Dump the data to standard out."""
 
     print()  # provide white-space around output
-    show_conf = meta_data['conf_filter'] == ['ALL']
     for team in data:
         print('{team:>{len}} {rank:>5} {record:>6}  {conf}'.format(
             len=meta_data['max_name_len'],
             team=team.name.replace('.', ''),  # dot in University St. looks funny in right-justified output
             rank=team.rank,
             record=team.record,
-            conf=team.conf if show_conf else ''
+            conf=team.conf if meta_data['show_conf'] else ''
         ))
     print()  # provide white-space around output
     print(meta_data['as_of'])

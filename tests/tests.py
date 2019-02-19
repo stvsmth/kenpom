@@ -95,6 +95,37 @@ def test_filter_data_conf_capitalization():
     assert data[1].name == 'Cincinnati'
 
 
+def test_write_to_console_top_5():
+    page_content = mock_fetch_content()
+    all_data, as_of = parse_data(page_content)
+    data, meta_data = filter_data(all_data, ['5'], as_of)
+
+    assert len(data) == 5
+    assert data[1].name == 'Virginia'
+    assert data[4].name == 'Kentucky'
+
+    with captured_output() as (out, err):
+        write_to_console(data, meta_data)
+        out_text = out.getvalue()
+
+    assert 'Michigan St     4   21-5  B10' in out_text
+
+
+def test_write_to_console_multi_conference():
+    page_content = mock_fetch_content()
+    all_data, as_of = parse_data(page_content)
+    data, meta_data = filter_data(all_data, ['ACC', 'Amer'], as_of)
+
+    assert len(data) == NUM_AMER_TEAMS + NUM_ACC_TEAMS
+    assert data[19].name == 'Tulsa'
+    assert data[24].name == 'Wake Forest'
+    with captured_output() as (out, err):
+        write_to_console(data, meta_data)
+        out_text = out.getvalue()
+
+    assert 'South Florida   103   17-8  Amer' in out_text
+
+
 def test_write_to_console_basic_conference():
     page_content = mock_fetch_content()
     all_data, as_of = parse_data(page_content)
