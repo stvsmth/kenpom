@@ -22,7 +22,10 @@ Expected Output for ACC
 Data includes 17 of 18 games played on Sunday, February 17
 """
 
-from captured_output import captured_output
+from contextlib import contextmanager
+from io import StringIO
+import sys
+
 from kenpom import parse_data, filter_data, write_to_console
 
 
@@ -150,3 +153,14 @@ def test_write_to_console_basic_conference():
     assert '        Wake Forest   187   9-15' in out_text
 
     assert 'Data includes 17 of 18 games played on Sunday, February 17' in out_text
+
+
+@contextmanager
+def captured_output():
+    new_out, new_err = StringIO(), StringIO()
+    old_out, old_err = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = new_out, new_err
+        yield sys.stdout, sys.stderr
+    finally:
+        sys.stdout, sys.stderr = old_out, old_err
