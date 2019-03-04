@@ -21,12 +21,32 @@ import requests
 URL = 'https://kenpom.com/'
 MAX_TEAMS = 500  # it's actually more like 353, but we don't care
 DATA_ROW_COL_COUNT = 22
-KenPom = namedtuple('KenPom', [
-    'rank', 'name', 'conf', 'record', 'eff_margin', 'offense', 'off_rank', 'defense', 'def_rank',
-    'tempo', 'tempo_rank', 'luck', 'luck_rank',
-    'sos_eff_margin', 'sos_eff_margin_rank', 'sos_off', 'sos_off_rank', 'sos_def', 'sos_def_rank',
-    'sos_non_conf', 'sos_non_conf_rank',
-])
+KenPom = namedtuple(
+    'KenPom',
+    [
+        'rank',
+        'name',
+        'conf',
+        'record',
+        'eff_margin',
+        'offense',
+        'off_rank',
+        'defense',
+        'def_rank',
+        'tempo',
+        'tempo_rank',
+        'luck',
+        'luck_rank',
+        'sos_eff_margin',
+        'sos_eff_margin_rank',
+        'sos_off',
+        'sos_off_rank',
+        'sos_def',
+        'sos_def_rank',
+        'sos_non_conf',
+        'sos_non_conf_rank',
+    ],
+)
 
 
 def main():
@@ -70,10 +90,10 @@ def parse_data(html_content):
         # Consume entire iterator, we'll filter columns later.
         elements = deque(row.children)
 
-        # We're relying on the fact that data-based rows have 22 cols and header rows do not
+        # Rely on the fact that data-based rows have 22 cols and header rows do not
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
-        # Note, this will strip out any "blank" column as well (such as the first column)
+        # Note, we strip out any "blank" column as well (such as the first column)
         elements = [e.text for e in elements if hasattr(e, 'text')]
         data.append(KenPom(*elements))
 
@@ -115,7 +135,9 @@ def filter_data(data, conf, as_of):
     for team in data:
         if do_all or top_filter or team.conf.upper() in conf:
             curr_team_len = len(team.name) + 1
-            max_name_len = curr_team_len if curr_team_len > max_name_len else max_name_len
+            max_name_len = (
+                curr_team_len if curr_team_len > max_name_len else max_name_len
+            )
             filtered_data.append(team)
 
             if len(filtered_data) == top_filter:
@@ -137,13 +159,17 @@ def write_to_console(data, meta_data):
 
     print()  # provide white-space around output
     for team in data:
-        print('{team:>{len}} {rank:>5} {record:>6}  {conf}'.format(
-            len=meta_data['max_name_len'],
-            team=team.name.replace('.', ''),  # dot in University St. looks funny in right-justified output
-            rank=team.rank,
-            record=team.record,
-            conf=team.conf if meta_data['show_conf'] else ''
-        ))
+        print(
+            '{team:>{len}} {rank:>5} {record:>6}  {conf}'.format(
+                len=meta_data['max_name_len'],
+                team=team.name.replace(
+                    '.', ''
+                ),  # dot in University St. looks funny in right-justified output
+                rank=team.rank,
+                record=team.record,
+                conf=team.conf if meta_data['show_conf'] else '',
+            )
+        )
     print()  # provide white-space around output
     print(meta_data['as_of'])
     return data, meta_data
