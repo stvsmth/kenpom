@@ -3,3 +3,4 @@ beautifulsoup4>=4.7.0
 
 # dev
 pytest==4.1.1
+pre-commit==1.14.4

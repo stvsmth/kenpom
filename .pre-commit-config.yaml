@@ -1,0 +1,22 @@
+repos:
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.7
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.1.0
+    hooks:
+    -   id: check-ast
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: debug-statements
+    -   id: check-merge-conflict
+-   repo: https://github.com/myint/docformatter
+    rev: master
+    hooks:
+    -   id: docformatter
+        args:
+          - --wrap-summaries=95
+          - --wrap-descriptions=90
+          - --in-place
