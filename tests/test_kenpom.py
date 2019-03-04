@@ -20,10 +20,11 @@ Expected Output for ACC
 
 Data includes 17 of 18 games played on Sunday, February 17
 """
-
+import os
 from contextlib import contextmanager
 from io import StringIO
 import sys
+from pathlib import Path
 
 from kenpom import parse_data, filter_data, write_to_console
 
@@ -33,7 +34,14 @@ NUM_AMER_TEAMS = 12
 
 
 def mock_fetch_content():
-    with open("test.html", "r") as f:
+    """Get a local copy of HTML file.
+
+    We do some path manipulations so the tests can be run via py.test from any
+    directory.
+    """
+    this_dir = Path(__file__).resolve().parent
+    test_html_path = os.path.join(this_dir, "test.html")
+    with open(test_html_path, "r") as f:
         data = f.read()
         return data
 
