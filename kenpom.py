@@ -17,7 +17,6 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
 URL = "https://kenpom.com/"
-MAX_TEAMS = 500  # it's actually more like 353, but we don't care
 DATA_ROW_COL_COUNT = 22
 KenPom = namedtuple(
     "KenPom",
@@ -122,8 +121,8 @@ def _get_filters(conf):
 def filter_data(data, conf, as_of):
     """Filter data before we display.
 
-    Currently only filters by conference, may add filtering by Top 25/100, columns (config
-    which columnar data is displayed).
+    Currently only filters by conference, may add filtering by Top 25/100,
+    columns (config which columnar data is displayed).
     """
 
     conf, top_filter, do_all = _get_filters(conf)
