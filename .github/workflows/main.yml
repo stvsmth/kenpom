@@ -1,4 +1,4 @@
-name: CI
+name: Kenpom build
 
 on: [push]
 
@@ -6,8 +6,23 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Run tests
-      run: pytest tests
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run pre-commit hooks
+      run: |
+        pre-commit run --all-files
+    - name: Test with pytest
+      run: |
+        pytest
