@@ -11,6 +11,8 @@ This may run on Python 3.5 or earlier, but I find f-strings delightful, so I'm o
 testing 3.6 and greater. I find I this tool particularly useful on my iPhone with
 Pythonista.
 
+![tests](https://github.com/stvsmth/kenpom/workflows/tests/badge.svg)
+
 ## Installation
 
 This is tool primarily uses [requests](https://requests.readthedocs.io/en/master/)
