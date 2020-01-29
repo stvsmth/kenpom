@@ -7,12 +7,13 @@ Why scrape? Well, if your team rarely haunts the top 25 and/or your curious how 
 team ranks against other non-ranked teams, KenPom is one way to compare relative
 strengths.
 
-This works in any Python 3 environment (probably Python 2 as well, but I haven't
-checked), but I find it particularly useful in on my iPhone with Pythonista.
+This may run on Python 3.5 or earlier, but I find f-strings delightful, so I'm only
+testing 3.6 and greater. I find I this tool particularly useful on my iPhone with
+Pythonista.
 
 ## Installation
 
-This is a Python 3 tool that uses [requests](https://requests.readthedocs.io/en/master/)
+This is tool primarily uses [requests](https://requests.readthedocs.io/en/master/)
 and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/). While not
 required, using virtual environments is almost always the smart thing to do. Also, we
 use some pre-commit hooks to keep things formatted nicely and avoid some silly mistakes.
@@ -33,21 +34,20 @@ You can pass filtering options in via command-line arguments or as prompted.
 
 ```bash
 # You can see all rankings
-(kenpom) % ./kenpom.py all
+(kenpom) % python kenpom.py all
 
-                 Kansas     1   17-3
-                   Duke     2   17-3
-                Gonzaga     3   21-1
-                 [snip]   ...    ...
- Maryland Eastern Shore   352   2-19
-             Chicago St   353   4-18
+                 Kansas     1   17-3  B12
+                   Duke     2   17-3  ACC
+                Gonzaga     3   21-1  WCC
+                  [snip]  ...    ...  ...
+             Chicago St   353   4-18  WAC
 
 Data through games of Tuesday, January 28
  (3802 games)
 
 # Pass in a number for top `n` teams
 ~/code/stv/kenpom
-(kenpom) % ./kenpom.py 7
+(kenpom) % python kenpom.py 7
 
         Kansas     1   17-3  B12
           Duke     2   17-3  ACC
@@ -61,7 +61,7 @@ Data through games of Tuesday, January 28
  (3802 games)
 
 # Pass in a conference name (case insensitive)
-(kenpom) % ./kenpom.py acc
+(kenpom) % python kenpom.py acc
 
            Duke     2   17-3
      Louisville    10   17-3
@@ -75,7 +75,7 @@ Data through games of Tuesday, January 28
 
 # More than one conference
 ~/code/stv/kenpom
-(kenpom) % ./kenpom.py acc,sec
+(kenpom) % python kenpom.py acc,sec
 
             Duke     2   17-3  ACC
       Louisville    10   17-3  ACC
@@ -93,7 +93,7 @@ Data through games of Tuesday, January 28
 
 # No parameters? then answer the prompt (handy in Pythonista)
 ~/code/stv/kenpom
-(kenpom) % ./kenpom.py
+(kenpom) % python kenpom.py
 Top `n` or conference list: acc,sec
 
             Duke     2   17-3  ACC
