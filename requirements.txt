@@ -3,4 +3,4 @@ beautifulsoup4>=4.7.0
 
 # dev
 pre-commit
-pytest>=5.3.4  # https://github.com/pytest-dev/pytest/issues/5903
+pytest
