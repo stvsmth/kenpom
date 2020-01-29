@@ -4,24 +4,17 @@
 # Packaging files:
 *.egg*
 
-# Editor temp files:
-*.swp
-*~
-
-# SQLite3 database files:
-*.db
-
-# Logs:
-*.log
-
 # Mac Specific:
 .DS_Store
 
-# PyCharm
+# Editors
 .idea/
+*.swp
+*~
 
 # Used to track versions in distributions
 RELEASE-VERSION
 
-# Pytest
+# test, docs, coverage
 .pytest_cache
+.coverage
