@@ -1,15 +1,15 @@
 # KenPom scraper
 
 A little bit of Python to scrape the front page of the wonderfully useful
-KenPom site for NCAA basketball statistics.
+[KenPom](https://kenpom.com) site for NCAA basketball statistics.
 
 Why scrape? Well, if your team rarely haunts the top 25 and/or your curious how your
 team ranks against other non-ranked teams, KenPom is one way to compare relative
-strengths.
+strengths.  I find I this tool particularly useful on my iPhone with
+[Pythonista](http://omz-software.com/pythonista/).
 
 This may run on Python 3.5 or earlier, but I find f-strings delightful, so I'm only
-testing 3.6 and greater. I find I this tool particularly useful on my iPhone with
-Pythonista.
+testing 3.6 and greater.
 
 ![tests](https://github.com/stvsmth/kenpom/workflows/tests/badge.svg)
 
