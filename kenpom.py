@@ -50,7 +50,7 @@ def main():
     """Get args, fetch data, filter data, display data."""
 
     args = sys.argv[1] if len(sys.argv) == 2 else None
-    conferences = args or input("Conference list: ") or "ALL"
+    conferences = args or input("Top `n` or conference list: ") or "ALL"
     conferences = conferences.split(",")
     page_content = fetch_content(URL)
     all_data, as_of = parse_data(page_content)
