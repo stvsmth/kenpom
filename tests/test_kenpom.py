@@ -20,13 +20,13 @@ Expected Output for ACC
 
 Data includes 17 of 18 games played on Sunday, February 17
 """
-import os
+
 from contextlib import contextmanager
 from io import StringIO
-import sys
-from pathlib import Path
-
 from kenpom import parse_data, filter_data, write_to_console
+from pathlib import Path
+import os
+import sys
 
 
 NUM_ACC_TEAMS = 15
