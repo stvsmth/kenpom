@@ -3,7 +3,6 @@
 """Scrape KenPom data for quick display.
 
 TODO:
-* Documentation of inputs (ALL; 25; 50; ACC; acc,b10;  etc)
 * Provide some kind of configuration object to drive display of columns.
   Probably have a `filter_data` method that takes display config (which
   rows (conf, top 25) and columns (team, rank, W-L, etc) and returns
@@ -161,7 +160,7 @@ def write_to_console(data, meta_data):
                 len=meta_data["max_name_len"],
                 team=team.name.replace(
                     ".", ""
-                ),  # dot in University St. looks funny in right-justified output
+                ),  # dot in North Carolina St. looks funny in right-justified output
                 rank=team.rank,
                 record=team.record,
                 conf=team.conf if meta_data["show_conf"] else "",
