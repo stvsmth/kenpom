@@ -38,17 +38,17 @@ You can pass filtering options in via command-line arguments or as prompted.
 # You can see all rankings
 (kenpom) % python kenpom.py all
 
-                 Kansas     1   17-3  B12
-                   Duke     2   17-3  ACC
-                Gonzaga     3   21-1  WCC
-                 [snip]   ...    ...  ...
-             Chicago St   353   4-18  WAC
+         Kansas     1   17-3  B12
+           Duke     2   17-3  ACC
+        Gonzaga     3   21-1  WCC
+         [snip]   ...    ...  ...
+     Chicago St   353   4-18  WAC
 
 Data through games of Tuesday, January 28
  (3802 games)
 
 # Pass in a number for top `n` teams
-~/code/stv/kenpom
+
 (kenpom) % python kenpom.py 7
 
         Kansas     1   17-3  B12
@@ -76,7 +76,7 @@ Data through games of Tuesday, January 28
  (3802 games)
 
 # More than one conference
-~/code/stv/kenpom
+
 (kenpom) % python kenpom.py acc,sec
 
             Duke     2   17-3  ACC
@@ -86,7 +86,6 @@ Data through games of Tuesday, January 28
         Arkansas    28   15-4  SEC
              LSU    33   15-4  SEC
            [snip]  ...    ...  ...
-       Texas A&M   154   10-9  SEC
   Boston College   166  10-10  ACC
       Vanderbilt   183   8-11  SEC
 
@@ -94,7 +93,7 @@ Data through games of Tuesday, January 28
  (3802 games)
 
 # No parameters? then answer the prompt (handy in Pythonista)
-~/code/stv/kenpom
+
 (kenpom) % python kenpom.py
 Top `n` or conference list: acc,sec
 
@@ -105,7 +104,6 @@ Top `n` or conference list: acc,sec
         Arkansas    28   15-4  SEC
              LSU    33   15-4  SEC
            [snip]  ...    ...  ...
-       Texas A&M   154   10-9  SEC
   Boston College   166  10-10  ACC
       Vanderbilt   183   8-11  SEC
 
