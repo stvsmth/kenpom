@@ -39,7 +39,7 @@ You can pass filtering options in via command-line arguments or as prompted.
                  Kansas     1   17-3  B12
                    Duke     2   17-3  ACC
                 Gonzaga     3   21-1  WCC
-                  [snip]  ...    ...  ...
+                 [snip]   ...    ...  ...
              Chicago St   353   4-18  WAC
 
 Data through games of Tuesday, January 28
