@@ -117,19 +117,19 @@ def _get_filters(conf):
     return conf, top_filter, do_all
 
 
-def filter_data(data, conf, as_of):
+def filter_data(data, conf_list, as_of):
     """Filter data before we display.
 
     Currently only filters by conference, may add filtering by Top 25/100,
     columns (config which columnar data is displayed).
     """
 
-    conf, top_filter, do_all = _get_filters(conf)
+    conf_list, top_filter, do_all = _get_filters(conf_list)
     max_name_len = 4
     filtered_data = []
 
     for team in data:
-        if do_all or top_filter or team.conf.upper() in conf:
+        if do_all or top_filter or team.conf.upper() in conf_list:
             curr_team_len = len(team.name) + 1
             max_name_len = (
                 curr_team_len if curr_team_len > max_name_len else max_name_len
@@ -138,10 +138,13 @@ def filter_data(data, conf, as_of):
 
             if len(filtered_data) == top_filter:
                 break
-    show_conf = True if len(conf) > 1 or top_filter is not None else False
+
+    is_top_n_filter = len(conf_list) > 1
+    is_all_filter = conf_list == ["ALL"]
+    show_conf = True if is_top_n_filter or top_filter or is_all_filter else False
     meta_data = {
         "as_of": as_of,
-        "conf_filter": conf,
+        "conf_filter": conf_list,
         "max_name_len": max_name_len,
         "num_teams": len(filtered_data),
         "show_conf": show_conf,

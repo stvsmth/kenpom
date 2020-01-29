@@ -105,6 +105,22 @@ def test_filter_data_conf_capitalization():
     assert data[1].name == "Cincinnati"
 
 
+def test_write_to_console_all():
+    page_content = mock_fetch_content()
+    all_data, as_of = parse_data(page_content)
+
+    data, meta_data = filter_data(all_data, ["ALL"], as_of)
+
+    # Grab just # 4 for cleaner diff on test failure.
+    data = data[3:4]
+    with captured_output() as (out, err):
+        write_to_console(data, meta_data)
+        out_text = out.getvalue()
+
+    text_without_footer = out_text.split("\n")[1]
+    assert "Michigan St     4   21-5  B10" in text_without_footer
+
+
 def test_write_to_console_top_5():
     page_content = mock_fetch_content()
     all_data, as_of = parse_data(page_content)
