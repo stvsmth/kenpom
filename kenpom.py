@@ -47,11 +47,11 @@ KenPom = namedtuple(
 def main():
     """Get args, fetch data, filter data, display data."""
     args = get_args(sys.argv)
-    conferences = args or input("Top `n` or conference list: ") or "ALL"
-    conferences = conferences.split(",")
+    filters = args or input("Top `n` or conference list: ") or "ALL"
+    filters = filters.split(",")
     page_content = fetch_content(URL)
-    all_data, as_of = parse_data(page_content)
-    data, meta_data = filter_data(all_data, conferences, as_of)
+    raw_data, as_of = parse_data(page_content)
+    data, meta_data = filter_data(raw_data, filters, as_of)
     write_to_console(data, meta_data)
 
 
@@ -98,10 +98,10 @@ def parse_data(html_content):
 def _get_filters(conf):
     """Return filters based on user input.
 
-    This is a brute force not-so-pretty way of handling
-    top-N filters along with conference-based filters.
-
-    We'll clean this up in the future.
+        This is a brute force not-so-pretty way of handling
+        top-N filters along with conference-based filters.
+    ):
+        We'll clean this up in the future.
     """
 
     conf = [c.upper() for c in conf]
