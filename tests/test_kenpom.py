@@ -33,7 +33,7 @@ NUM_ACC_TEAMS = 15
 NUM_AMER_TEAMS = 12
 
 
-def mock_fetch_content():
+def _fetch_test_content():
     """Get a local copy of HTML file.
 
     We do some path manipulations so the tests can be run via py.test from any
@@ -46,9 +46,12 @@ def mock_fetch_content():
         return data
 
 
+# Read the file once for these tests
+PARSED_CONTENT = parse_data(_fetch_test_content())
+
+
 def test_parse_data():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
 
     # Test the first row, all columns to make sure we're matched
     assert "Virginia" == all_data[1].name
@@ -93,8 +96,7 @@ def test_parse_data():
 
 
 def test_filter_data_conf_capitalization():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
     data, _ = filter_data(all_data, ["amer"], as_of)
 
     # Test using `amer` since KenPom doesn't capitalize all conference names
@@ -106,8 +108,7 @@ def test_filter_data_conf_capitalization():
 
 
 def test_write_to_console_all():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
 
     data, meta_data = filter_data(all_data, ["ALL"], as_of)
 
@@ -122,8 +123,7 @@ def test_write_to_console_all():
 
 
 def test_write_to_console_top_5():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
     data, meta_data = filter_data(all_data, ["5"], as_of)
 
     assert len(data) == 5
@@ -138,8 +138,7 @@ def test_write_to_console_top_5():
 
 
 def test_write_to_console_multi_conference():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
     data, meta_data = filter_data(all_data, ["ACC", "Amer"], as_of)
 
     assert len(data) == NUM_AMER_TEAMS + NUM_ACC_TEAMS
@@ -153,8 +152,7 @@ def test_write_to_console_multi_conference():
 
 
 def test_write_to_console_basic_conference():
-    page_content = mock_fetch_content()
-    all_data, as_of = parse_data(page_content)
+    all_data, as_of = PARSED_CONTENT
     data, meta_data = filter_data(all_data, ["ACC"], as_of)
 
     with captured_output() as (out, err):
