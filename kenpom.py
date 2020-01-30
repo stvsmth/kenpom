@@ -9,11 +9,10 @@ TODO:
   appropriate data for display.
 """
 
-from collections import deque, namedtuple
-import sys
-
 from bs4 import BeautifulSoup, SoupStrainer
+from collections import deque, namedtuple
 import requests
+import sys
 
 URL = "https://kenpom.com/"
 DATA_ROW_COL_COUNT = 22
@@ -47,14 +46,17 @@ KenPom = namedtuple(
 
 def main():
     """Get args, fetch data, filter data, display data."""
-
-    args = sys.argv[1] if len(sys.argv) == 2 else None
+    args = get_args(sys.argv)
     conferences = args or input("Top `n` or conference list: ") or "ALL"
     conferences = conferences.split(",")
     page_content = fetch_content(URL)
     all_data, as_of = parse_data(page_content)
     data, meta_data = filter_data(all_data, conferences, as_of)
     write_to_console(data, meta_data)
+
+
+def get_args(args):
+    return args[1] if len(args) == 2 else None
 
 
 def fetch_content(url):
