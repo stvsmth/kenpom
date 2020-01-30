@@ -60,12 +60,9 @@ def main():
 def fetch_content(url):
     """Fetch the HTML content from the URL."""
 
-    page = requests.get(url)
-    if page.status_code == 200:
-        return page.content
-    else:
-        print("Error in getting page")
-        sys.exit(1)
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.content
 
 
 def parse_data(html_content):
