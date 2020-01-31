@@ -53,7 +53,6 @@ def parse_data(html_content):
     type the data, such that the `rank` data item is an integer, the efficiency
     margin data is float, etc.
     """
-
     as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
     as_of = as_of_html[0].text if as_of_html else ""
 
@@ -74,12 +73,9 @@ def _get_filters(user_input):
     """Return filters based on user input.
 
     This is a brute force not-so-pretty way of handling top-N filters along with
-    name-based filters. There are probably all kinds of input that could
-    cause issues. But I'm the only user right now.
-
-    We'll clean this up in the future.
+    name-based filters. There are probably all kinds of input that could cause
+    issues. But I'm the only user right now.
     """
-
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
     # of conference codes (acc,sec) or (possibly partial) school names (vil,kans)
@@ -101,15 +97,14 @@ def _get_filters(user_input):
 
 
 def filter_data(data, user_input, as_of):
-    """Filter data before we display.
-
-    Currently only filters by conference, may add filtering by Top 25/100,
-    columns (config which columnar data is displayed).
-    """
-
-    names, top_filter = _get_filters(user_input)
-    max_name_len = 4
+    """Filter data before we display."""
     filtered_data = []
+    names, top_filter = _get_filters(user_input)
+
+    # Keep track of the longest school name, we'll need this to handle
+    # right-justified formatting in our console output. The shortest
+    # school name is four chars.
+    max_name_len = 4
 
     is_top_search = top_filter >= 0
     is_conf_search = CONF_LIST.intersection(set(names))
@@ -147,7 +142,6 @@ def filter_data(data, user_input, as_of):
 
 def write_to_console(data, meta_data):
     """Dump the data to standard out."""
-
     print()  # provide white-space around output
     for team in data:
         print(
@@ -155,7 +149,7 @@ def write_to_console(data, meta_data):
                 len=meta_data["max_name_len"],
                 team=team.name.replace(
                     ".", ""
-                ),  # dot in North Carolina St. looks funny in right-justified output
+                ),  # dot in Florida St. looks funny in right-justified output
                 rank=team.rank,
                 record=team.record,
                 conf=team.conf if meta_data["show_conf"] else "",
