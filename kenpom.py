@@ -5,47 +5,20 @@
 TODO:
 * Clean up arg handling, but retain option for user_input on no args
   (essential for easy use in primary use case: iPhone/Pythonista).
-* Get a list of conferences. 1) Use for input validation? 2) Generate
-  list via an arg (--list)
+* Use conf list for input validation? 2) Generate list via an arg (--list)
 * Provide configuration object to drive display of columns. We currently
   only show rank, W/L, and (sometimes) conference.
 """
 
 from bs4 import BeautifulSoup, SoupStrainer
-from collections import namedtuple
+from const import KenPom, CONF_LIST
+from urllib.parse import unquote_plus
 import requests
 import sys
 
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
-
-KenPom = namedtuple(
-    "KenPom",
-    [
-        "rank",
-        "name",
-        "conf",
-        "record",
-        "eff_margin",
-        "offense",
-        "off_rank",
-        "defense",
-        "def_rank",
-        "tempo",
-        "tempo_rank",
-        "luck",
-        "luck_rank",
-        "sos_eff_margin",
-        "sos_eff_margin_rank",
-        "sos_off",
-        "sos_off_rank",
-        "sos_def",
-        "sos_def_rank",
-        "sos_non_conf",
-        "sos_non_conf_rank",
-    ],
-)
 
 
 def main():
@@ -62,7 +35,7 @@ def get_args(args):
     if len(args) == 2:
         return args[1]
     else:
-        return input("Top `n`, 0 for all, or conference list [0]: ") or "0"
+        return input("Top `n`, 0 for all, school(s), or conference(s) [0]: ") or "0"
 
 
 def fetch_content(url):
@@ -101,24 +74,29 @@ def _get_filters(user_input):
     """Return filters based on user input.
 
     This is a brute force not-so-pretty way of handling top-N filters along with
-    conference-based filters. There are probably all kinds of input that could
+    name-based filters. There are probably all kinds of input that could
     cause issues. But I'm the only user right now.
 
     We'll clean this up in the future.
     """
 
-    # Normalize the user input from command-line (or `input`)
-    user_input = [c.upper() for c in user_input.split(",")]
-
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
-    # of conferences code (acc,sec)
-    top_filter = -1
+    # of conference codes (acc,sec) or (possibly partial) school names (vil,kans)
     try:
-        top_filter = int(user_input[0])
+        top_filter = int(user_input)
         assert top_filter >= 0, "Top `n` must be zero or greater."
         return [], top_filter
     except ValueError:
+        # Normalize the user input from command-line (or `input`)
+        user_input = [c.upper() for c in user_input.split(",")]
+
+        # Remove any quotes used in school name input
+        user_input = [u.replace('"', "").replace("'", "") for u in user_input]
+
+        # Decode any encoded input (mostly + for space) because sometimes we start
+        # typing and don' want to go back and surround input with quotes
+        user_input = [unquote_plus(i) for i in user_input]
         return user_input, -1
 
 
@@ -129,12 +107,23 @@ def filter_data(data, user_input, as_of):
     columns (config which columnar data is displayed).
     """
 
-    conf_list, top_filter = _get_filters(user_input)
+    names, top_filter = _get_filters(user_input)
     max_name_len = 4
     filtered_data = []
 
+    is_top_search = top_filter >= 0
+    is_conf_search = CONF_LIST.intersection(set(names))
+    is_name_search = not is_top_search and not is_conf_search
+
     for team in data:
-        if top_filter >= 0 or team.conf.upper() in conf_list:
+        if is_conf_search:
+            is_included = team.conf.upper() in names
+        elif is_name_search:
+            is_included = any([n in team.name.upper() for n in names])
+        else:
+            is_included = False
+
+        if is_top_search or is_included:
             curr_team_len = len(team.name) + 1
             max_name_len = (
                 curr_team_len if curr_team_len > max_name_len else max_name_len
@@ -144,10 +133,10 @@ def filter_data(data, user_input, as_of):
             if len(filtered_data) == top_filter:
                 break
 
-    show_conf = True if top_filter >= 0 or len(conf_list) > 1 else False
+    show_conf = any([is_top_search, is_name_search, is_conf_search and len(names) > 1])
     meta_data = {
         "as_of": as_of,
-        "conf_filter": conf_list,
+        "name_filter": names,  # not currently used, but I think we want it
         "max_name_len": max_name_len,
         "num_teams": len(filtered_data),
         "show_conf": show_conf,

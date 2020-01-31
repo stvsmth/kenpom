@@ -31,6 +31,7 @@ import sys
 
 NUM_ACC_TEAMS = 15
 NUM_AMER_TEAMS = 12
+NUM_UTAH_NAMES = 4
 
 
 def _fetch_test_content():
@@ -105,6 +106,60 @@ def test_filter_data_conf_capitalization():
     assert len(data) == NUM_AMER_TEAMS
     assert data[0].name == "Houston"
     assert data[1].name == "Cincinnati"
+
+
+def test_filter_handles_top_n():
+
+    # Be sure this we work on double-digit numbers, otherwise
+    # There's a subtle logic bug that could end up printing 2 teams
+    # instead of 25. Strings being iterable and all that.
+    all_data, as_of = PARSED_CONTENT
+
+    data, _ = filter_data(all_data, "0", as_of)
+    assert len(data) == 353
+
+    data, _ = filter_data(all_data, "1", as_of)
+    assert len(data) == 1
+
+    data, _ = filter_data(all_data, "7", as_of)
+    assert len(data) == 7
+
+    data, _ = filter_data(all_data, "25", as_of)
+    assert len(data) == 25
+
+    data, _ = filter_data(all_data, "111", as_of)
+    assert len(data) == 111
+
+
+def test_filter_data_school_names():
+    all_data, as_of = PARSED_CONTENT
+    data, _ = filter_data(all_data, "utah", as_of)
+
+    # Test using `amer` since KenPom doesn't capitalize all conference names
+    # (only the acronyms, which are most ... eg American Athletic Conference
+    # is displayed as `Amer`.
+    assert len(data) == NUM_UTAH_NAMES
+    assert data[1].name == "Utah Valley"
+    assert data[3].name == "Southern Utah"
+
+    # Check for multiple names input
+    data, _ = filter_data(all_data, "wyoming,wofford", as_of)
+    assert len(data) == 2
+    assert data[0].name == "Wofford"
+    assert data[1].name == "Wyoming"
+
+    # Check for quoting (single and double) and url encoding
+    data, _ = filter_data(all_data, "'Virginia Tech'", as_of)
+    assert len(data) == 1
+    assert data[0].name == "Virginia Tech"
+
+    data, _ = filter_data(all_data, '"Virginia Tech"', as_of)
+    assert len(data) == 1
+    assert data[0].name == "Virginia Tech"
+
+    data, _ = filter_data(all_data, "virginia+tech", as_of)
+    assert len(data) == 1
+    assert data[0].name == "Virginia Tech"
 
 
 def test_write_to_console_all():
