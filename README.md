@@ -26,7 +26,7 @@ python3 -m venv kenpom
 cd kenpom && source bin/activate
 pip install -r requirements.txt
 pre-commit install
-pytest
+pytest tests
 ```
 
 ## Usage
