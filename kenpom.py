@@ -35,7 +35,7 @@ def get_args(args):
     if len(args) == 2:
         return args[1]
     else:
-        return input("Top `n`, 0 for all, school(s), or conference(s) [0]: ") or "0"
+        return input("Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
 
 
 def fetch_content(url):

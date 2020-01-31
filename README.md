@@ -33,10 +33,10 @@ pytest tests
 ## Usage
 
 You can pass filtering options in via command-line arguments or as prompted. We'll
-filter on conference(s), school names(s), or the top `n` schools. Conference and
-school names are case insensitive. While conference names must match exactly, school
-names will match on any string. For example, `irgini` will match schools with `Virginia`
-in the name.
+filter on conference(s), school names(s), or the top `n` schools. With no input we
+simply print the top 25 teams. Conference and school names are case insensitive. While
+conference names must match exactly, school names will match on any string. For example,
+`irgini` will match schools with `Virginia` in the name.
 
 #### Conference name vs school name searches
 Conference searches take precedence over school name searches.
@@ -49,7 +49,7 @@ you should **use four characters or more for school name searches**. You've been
 #### Basic usage: show all rankings in descending order
 
     (kenpom) $ python kenpom.py
-    Top `n`, 0 for all, or conference list [0]: acc,sec
+    Top `n`, 0 for all, or conference list [25]: acc,sec
 
                 Duke     2   17-3  ACC
           Louisville    10   17-3  ACC
@@ -78,7 +78,7 @@ This is probably the most useful mode. Your team is playing Duke? How do they ma
 #### Searching for schools by full name(s)
 
 Searching for schools by full name, when that name includes a space, requires some care.
-You can either quote the school name(s):
+You can either quote the school name(s) (single or double):
 
     (kenpom) $ python kenpom.py "virginia tech","florida st"
 
@@ -134,7 +134,7 @@ are too lazy to go back and add a leading quote.
       Boston College   166  10-10  ACC
           Vanderbilt   183   8-11  SEC
 
-#### Explicitly fetch all rankings
+#### Fetch all rankings
 
     (kenpom) $ python kenpom.py 0
 
