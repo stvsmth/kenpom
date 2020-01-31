@@ -3,10 +3,12 @@
 """Scrape KenPom data for quick display.
 
 TODO:
-* Provide some kind of configuration object to drive display of columns.
-  Probably have a `filter_data` method that takes display config (which
-  rows (conf, top 25) and columns (team, rank, W-L, etc) and returns
-  appropriate data for display.
+* Clean up arg handling, but retain option for user_input on no args
+  (essential for easy use in primary use case: iPhone/Pythonista).
+* Get a list of conferences. 1) Use for input validation? 2) Generate
+  list via an arg (--list)
+* Provide configuration object to drive display of columns. We currently
+  only show rank, W/L, and (sometimes) conference.
 """
 
 from bs4 import BeautifulSoup, SoupStrainer
@@ -85,7 +87,7 @@ def parse_data(html_content):
         # Consume entire iterator, we'll filter columns later.
         elements = deque(row.children)
 
-        # Rely on the fact that data-based rows have 22 cols and header rows do not
+        # Rely on the fact that relevant rows have 22 cols and other tr elements don't
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
         # Note, we strip out any "blank" column as well (such as the first column)
@@ -98,10 +100,11 @@ def parse_data(html_content):
 def _get_filters(conf):
     """Return filters based on user input.
 
-        This is a brute force not-so-pretty way of handling
-        top-N filters along with conference-based filters.
-    ):
-        We'll clean this up in the future.
+    This is a brute force not-so-pretty way of handling top-N filters along with
+    conference-based filters. There are probably all kinds of input that could
+    cause issues. But I'm the only user right now.
+
+    We'll clean this up in the future.
     """
 
     conf = [c.upper() for c in conf]
