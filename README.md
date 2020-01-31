@@ -35,8 +35,24 @@ You can pass filtering options in via command-line arguments or as prompted.
 
 
 ```bash
+(kenpom) $ python kenpom.py
+Top `n`, 0 for all, or conference list [0]: acc,sec
+
+            Duke     2   17-3  ACC
+      Louisville    10   17-3  ACC
+      Florida St    18   17-3  ACC
+        Kentucky    25   15-4  SEC
+        Arkansas    28   15-4  SEC
+             LSU    33   15-4  SEC
+           [snip]  ...    ...  ...
+  Boston College   166  10-10  ACC
+      Vanderbilt   183   8-11  SEC
+
+Data through games of Tuesday, January 28
+ (3802 games)
+
 # You can see all rankings
-(kenpom) $ python kenpom.py 0  # zero for all, or leave blank
+(kenpom) $ python kenpom.py 0
 
          Kansas     1   17-3  B12
            Duke     2   17-3  ACC
@@ -94,19 +110,4 @@ Data through games of Tuesday, January 28
 
 # No parameters? then answer the prompt (handy in Pythonista)
 
-(kenpom) $ python kenpom.py
-Top `n`, 0 for all, or conference list [0]: acc,sec
-
-            Duke     2   17-3  ACC
-      Louisville    10   17-3  ACC
-      Florida St    18   17-3  ACC
-        Kentucky    25   15-4  SEC
-        Arkansas    28   15-4  SEC
-             LSU    33   15-4  SEC
-           [snip]  ...    ...  ...
-  Boston College   166  10-10  ACC
-      Vanderbilt   183   8-11  SEC
-
-Data through games of Tuesday, January 28
- (3802 games)
 ```
