@@ -18,3 +18,8 @@ RELEASE-VERSION
 # test, docs, coverage
 .pytest_cache
 .coverage
+
+# venv stuff
+bin/
+lib/
+pyvenv.cfg
