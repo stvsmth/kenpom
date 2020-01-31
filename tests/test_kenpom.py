@@ -148,7 +148,7 @@ def test_write_to_console_multi_conference():
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
-    assert "South Florida   103   17-8  Amer" in out_text
+    assert "Duke     1   23-2  ACC" in out_text
 
 
 def test_write_to_console_basic_conference():
