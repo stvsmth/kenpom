@@ -97,7 +97,7 @@ def test_parse_data():
 
 def test_filter_data_conf_capitalization():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, ["amer"], as_of)
+    data, _ = filter_data(all_data, "amer", as_of)
 
     # Test using `amer` since KenPom doesn't capitalize all conference names
     # (only the acronyms, which are most ... eg American Athletic Conference
@@ -110,7 +110,7 @@ def test_filter_data_conf_capitalization():
 def test_write_to_console_all():
     all_data, as_of = PARSED_CONTENT
 
-    data, meta_data = filter_data(all_data, ["ALL"], as_of)
+    data, meta_data = filter_data(all_data, "0", as_of)
 
     # Grab just # 4 for cleaner diff on test failure.
     data = data[3:4]
@@ -124,7 +124,7 @@ def test_write_to_console_all():
 
 def test_write_to_console_top_5():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, ["5"], as_of)
+    data, meta_data = filter_data(all_data, "5", as_of)
 
     assert len(data) == 5
     assert data[1].name == "Virginia"
@@ -139,7 +139,7 @@ def test_write_to_console_top_5():
 
 def test_write_to_console_multi_conference():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, ["ACC", "Amer"], as_of)
+    data, meta_data = filter_data(all_data, "ACC,Amer", as_of)
 
     assert len(data) == NUM_AMER_TEAMS + NUM_ACC_TEAMS
     assert data[19].name == "Tulsa"
@@ -153,7 +153,7 @@ def test_write_to_console_multi_conference():
 
 def test_write_to_console_basic_conference():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, ["ACC"], as_of)
+    data, meta_data = filter_data(all_data, "acc", as_of)
 
     with captured_output() as (out, err):
         write_to_console(data, meta_data)

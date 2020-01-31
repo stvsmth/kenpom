@@ -17,7 +17,9 @@ import requests
 import sys
 
 URL = "https://kenpom.com/"
-DATA_ROW_COL_COUNT = 22
+NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
+DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
+
 KenPom = namedtuple(
     "KenPom",
     [
@@ -48,22 +50,23 @@ KenPom = namedtuple(
 
 def main():
     """Get args, fetch data, filter data, display data."""
-    args = get_args(sys.argv)
-    filters = args or input("Top `n` or conference list: ") or "ALL"
-    filters = filters.split(",")
+    user_input = get_args(sys.argv)
     page_content = fetch_content(URL)
     raw_data, as_of = parse_data(page_content)
-    data, meta_data = filter_data(raw_data, filters, as_of)
+    data, meta_data = filter_data(raw_data, user_input, as_of)
     write_to_console(data, meta_data)
 
 
 def get_args(args):
-    return args[1] if len(args) == 2 else None
+    """Pull args from command-line, or prompt user if no args."""
+    if len(args) == 2:
+        return args[1]
+    else:
+        return input("Top `n`, 0 for all, or conference list [0]: ") or "0"
 
 
 def fetch_content(url):
     """Fetch the HTML content from the URL."""
-
     response = requests.get(url)
     response.raise_for_status()
     return response.content
@@ -97,7 +100,7 @@ def parse_data(html_content):
     return data, as_of
 
 
-def _get_filters(conf):
+def _get_filters(user_input):
     """Return filters based on user input.
 
     This is a brute force not-so-pretty way of handling top-N filters along with
@@ -107,31 +110,34 @@ def _get_filters(conf):
     We'll clean this up in the future.
     """
 
-    conf = [c.upper() for c in conf]
+    # Normalize the user input from command-line (or `input`)
+    user_input = [c.upper() for c in user_input.split(",")]
+
+    # IF we're filtering by N, we only have one parameter, and it should convert
+    # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
+    # of conferences code (acc,sec)
+    top_filter = -1
     try:
-        top_filter = int(conf[0])
-        do_all = False
-        assert top_filter >= 1, "Must use a positive integer"
+        top_filter = int(user_input[0])
+        assert top_filter >= 0, "Top `n` must be zero or greater."
+        return [], top_filter
     except ValueError:
-        top_filter = None
-        do_all = True if conf[0] == "ALL" else False
-
-    return conf, top_filter, do_all
+        return user_input, -1
 
 
-def filter_data(data, conf_list, as_of):
+def filter_data(data, user_input, as_of):
     """Filter data before we display.
 
     Currently only filters by conference, may add filtering by Top 25/100,
     columns (config which columnar data is displayed).
     """
 
-    conf_list, top_filter, do_all = _get_filters(conf_list)
+    conf_list, top_filter = _get_filters(user_input)
     max_name_len = 4
     filtered_data = []
 
     for team in data:
-        if do_all or top_filter or team.conf.upper() in conf_list:
+        if top_filter >= 0 or team.conf.upper() in conf_list:
             curr_team_len = len(team.name) + 1
             max_name_len = (
                 curr_team_len if curr_team_len > max_name_len else max_name_len
@@ -141,9 +147,7 @@ def filter_data(data, conf_list, as_of):
             if len(filtered_data) == top_filter:
                 break
 
-    is_top_n_filter = len(conf_list) > 1
-    is_all_filter = conf_list == ["ALL"]
-    show_conf = True if is_top_n_filter or top_filter or is_all_filter else False
+    show_conf = True if top_filter >= 0 or len(conf_list) > 1 else False
     meta_data = {
         "as_of": as_of,
         "conf_filter": conf_list,
