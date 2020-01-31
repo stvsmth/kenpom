@@ -95,7 +95,7 @@ def _get_filters(user_input):
         user_input = [u.replace('"', "").replace("'", "") for u in user_input]
 
         # Decode any encoded input (mostly + for space) because sometimes we start
-        # typing and don' want to go back and surround input with quotes
+        # typing and don't want to go back and surround input with quotes
         user_input = [unquote_plus(i) for i in user_input]
         return user_input, -1
 
