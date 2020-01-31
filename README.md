@@ -46,23 +46,23 @@ American University (for which searching `amer` will return the American Athleti
 Conference schools) or short search strings like `be` (Big East). Generally speaking,
 you should **use four characters or more for school name searches**. You've been warned.
 
-#### Basic usage: show all rankings in descending order
+#### Basic usage
+
+Without any command line options, we'll prompt you for one of three values: `n` for
+a top-`n` search, a conference code, or a school name. The default is a top-25 search.
 
     (kenpom) $ python kenpom.py
-    Top `n`, 0 for all, or conference list [25]: acc,sec
+    Top `n`, 0 for all, school(s), or conference(s) [25]:
 
-                Duke     2   17-3  ACC
-          Louisville    10   17-3  ACC
-          Florida St    18   17-3  ACC
-            Kentucky    25   15-4  SEC
-            Arkansas    28   15-4  SEC
-                 LSU    33   15-4  SEC
-               [snip]  ...    ...  ...
-      Boston College   166  10-10  ACC
-          Vanderbilt   183   8-11  SEC
+            Kansas     1   17-3  B12
+              Duke     2   17-3  ACC
+            Baylor     3   18-1  B12
+            [snip]   ...    ...  ...
+        Texas Tech    24   13-7  B12
+           Rutgers    25   16-5  B10
 
-    Data through games of Tuesday, January 28
-     (3802 games)
+    Data through games of Thursday, January 30
+     (3917 games)
 
 We'll be leaving out the footer for the remaining examples.
 
@@ -78,9 +78,9 @@ This is probably the most useful mode. Your team is playing Duke? How do they ma
 #### Searching for schools by full name(s)
 
 Searching for schools by full name, when that name includes a space, requires some care.
-You can either quote the school name(s) (single or double):
+You can quote the school name(s) using single or double quotes:
 
-    (kenpom) $ python kenpom.py "virginia tech","florida st"
+    (kenpom) $ python kenpom.py "virginia tech",'florida st'
 
         Florida St    21   17-3  ACC
      Virginia Tech    72   14-7  ACC
@@ -92,13 +92,17 @@ are too lazy to go back and add a leading quote.
 
      Virginia Tech    72   14-7  ACC
 
-
 #### Schools in one or more conferences
 
-    (kenpom) $ python kenpom.py wyom,woff
+    (kenpom) $ python kenpom.py sec,acc
 
-         Wofford   147   14-8  SC
-         Wyoming   297   5-17  MWC
+                Duke     2   17-3  ACC
+          Louisville    10   17-3  ACC
+          Florida St    18   17-3  ACC
+            Kentucky    25   15-4  SEC
+               [snip]  ...    ...  ...
+      Boston College   166  10-10  ACC
+          Vanderbilt   183   8-11  SEC
 
 #### Fetch the top `n` teams
 
@@ -112,34 +116,12 @@ are too lazy to go back and add a leading quote.
      West Virginia     6   16-3  B12
        Michigan St     7   15-5  B10
 
-#### Schools in one or more conferences
-    (kenpom) $ python kenpom.py acc
-
-               Duke     2   17-3
-         Louisville    10   17-3
-         Florida St    18   17-3
-             [snip]   ...    ...
-           Miami FL   112   11-9
-     Boston College   166  10-10
-
-    (kenpom) $ python kenpom.py ACC,SEC
-
-                Duke     2   17-3  ACC
-          Louisville    10   17-3  ACC
-          Florida St    18   17-3  ACC
-            Kentucky    25   15-4  SEC
-            Arkansas    28   15-4  SEC
-                 LSU    33   15-4  SEC
-               [snip]  ...    ...  ...
-      Boston College   166  10-10  ACC
-          Vanderbilt   183   8-11  SEC
-
 #### Fetch all rankings
 
     (kenpom) $ python kenpom.py 0
 
-             Kansas     1   17-3  B12
-               Duke     2   17-3  ACC
-            Gonzaga     3   21-1  WCC
-             [snip]   ...    ...  ...
-         Chicago St   353   4-18  WAC
+         Kansas     1   17-3  B12
+           Duke     2   17-3  ACC
+        Gonzaga     3   21-1  WCC
+         [snip]   ...    ...  ...
+     Chicago St   353   4-18  WAC
