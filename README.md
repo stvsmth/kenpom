@@ -21,7 +21,7 @@ required, using virtual environments is almost always the smart thing to do. Als
 use some pre-commit hooks to keep things formatted nicely and avoid some silly mistakes.
 
 ```bash
-git clone git@github.com:stvsmth/kenpom.git
+git clone https://github.com/stvsmth/kenpom.git
 python3 -m venv kenpom
 cd kenpom && source bin/activate
 pip install -r requirements.txt
