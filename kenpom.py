@@ -12,7 +12,7 @@ TODO:
 """
 
 from bs4 import BeautifulSoup, SoupStrainer
-from collections import deque, namedtuple
+from collections import namedtuple
 import requests
 import sys
 
@@ -81,15 +81,12 @@ def parse_data(html_content):
     margin data is float, etc.
     """
 
-    as_of_html = BeautifulSoup(html_content, "html.parser").find_all(class_="update")
+    as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
     as_of = as_of_html[0].text if as_of_html else ""
 
-    soup = BeautifulSoup(html_content, "html.parser", parse_only=SoupStrainer("tr"))
+    soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
     data = []
-    for row in soup:
-        # Consume entire iterator, we'll filter columns later.
-        elements = deque(row.children)
-
+    for elements in soup:
         # Rely on the fact that relevant rows have 22 cols and other tr elements don't
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
