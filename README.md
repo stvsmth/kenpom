@@ -64,7 +64,6 @@ Data through games of Tuesday, January 28
  (3802 games)
 
 # Pass in a number for top `n` teams
-
 (kenpom) $ python kenpom.py 7
 
         Kansas     1   17-3  B12
@@ -92,7 +91,6 @@ Data through games of Tuesday, January 28
  (3802 games)
 
 # More than one conference
-
 (kenpom) $ python kenpom.py ACC,SEC  # case doesn't matter
 
             Duke     2   17-3  ACC
@@ -107,7 +105,4 @@ Data through games of Tuesday, January 28
 
 Data through games of Tuesday, January 28
  (3802 games)
-
-# No parameters? then answer the prompt (handy in Pythonista)
-
 ```
