@@ -53,10 +53,10 @@ def parse_data(html_content):
     type the data, such that the `rank` data item is an integer, the efficiency
     margin data is float, etc.
     """
-    as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
+    as_of_html = BeautifulSoup(html_content, "html.parser").find_all(class_="update")
     as_of = as_of_html[0].text if as_of_html else ""
 
-    soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
+    soup = BeautifulSoup(html_content, "html.parser", parse_only=SoupStrainer("tr"))
     data = []
     for elements in soup:
         # Rely on the fact that relevant rows have 22 cols and other tr elements don't
