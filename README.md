@@ -9,8 +9,8 @@ team ranks against other non-ranked teams, KenPom is one way to compare relative
 strengths.  I find I this tool particularly useful on my iPhone with
 [Pythonista](http://omz-software.com/pythonista/).
 
-This may run on Python 3.5 or earlier, but I find f-strings delightful, so I'm only
-testing 3.6 and greater.
+This tool is tested against all version >= Python 3.6. While I would love to make use
+of Python 3.7+ features, Pythonista is currently stuck on Python 3.6.
 
 ![tests](https://github.com/stvsmth/kenpom/workflows/tests/badge.svg)
 
