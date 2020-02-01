@@ -44,7 +44,7 @@ Conference searches take precedence over school name searches.
 You will probably forget this and never even care. Unless, that is, you're fond of
 American University (for which searching `amer` will return the American Athletic
 Conference schools) or short search strings like `be` (Big East). Generally speaking,
-you should **use four characters or more for school name searches**. You've been warned.
+you should **use five characters or more for school name searches**. You've been warned.
 
 #### Basic usage
 
