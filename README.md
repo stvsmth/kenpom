@@ -117,7 +117,7 @@ are too lazy to go back and add a leading quote.
 
 #### Fetch all rankings
 
-    (kenpom) $ python kenpom.py 0
+    (kenpom) $ python kenpom.py all  # or 0
 
          Kansas     1   17-3  B12
            Duke     2   17-3  ACC

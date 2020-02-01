@@ -37,9 +37,16 @@ def main():
 def get_args(args):
     """Pull args from command-line, or prompt user if no args."""
     if len(args) == 2:
-        return args[1]
+        user_input = args[1]
     else:
-        return input("Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
+        user_input = (
+            input("Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
+        )
+
+    # Convert All input to our integer equivalent
+    if user_input.lower() == "all":
+        user_input = "0"
+    return user_input
 
 
 def fetch_content(url):
