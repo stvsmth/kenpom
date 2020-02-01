@@ -24,13 +24,13 @@ SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width or terminal 
 
 def main():
     """Get args, fetch data, filter data, display data."""
+    page_content = fetch_content(URL)
+    raw_data, as_of = parse_data(page_content)
     while True:
         try:
             user_input = get_args(sys.argv)
             if user_input.lower() in ("q", "quit", "exit"):
                 break
-            page_content = fetch_content(URL)
-            raw_data, as_of = parse_data(page_content)
             data, meta_data = filter_data(raw_data, user_input, as_of)
             write_to_console(data, meta_data)
         except KeyboardInterrupt:
