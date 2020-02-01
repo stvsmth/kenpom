@@ -62,7 +62,6 @@ a top-`n` search, a conference code, or a school name. The default is a top-25 s
            Rutgers    25   16-5  B10
 
     Data through games of Thursday, January 30
-     (3917 games)
 
 We'll be leaving out the footer for the remaining examples.
 

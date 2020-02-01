@@ -59,6 +59,8 @@ def parse_data(html_content):
     """
     as_of_html = BeautifulSoup(html_content, "html.parser").find_all(class_="update")
     as_of = as_of_html[0].text if as_of_html else ""
+    # Remove the total # of games indicator.
+    as_of = as_of.split("\n")[0]
 
     soup = BeautifulSoup(html_content, "html.parser", parse_only=SoupStrainer("tr"))
     data = []
