@@ -27,14 +27,11 @@ def main():
     page_content = fetch_content(URL)
     raw_data, as_of = parse_data(page_content)
     while True:
-        try:
-            user_input = get_args(sys.argv)
-            if user_input.lower() in ("q", "quit", "exit"):
-                break
-            data, meta_data = filter_data(raw_data, user_input, as_of)
-            write_to_console(data, meta_data)
-        except KeyboardInterrupt:
-            pass
+        user_input = get_args(sys.argv)
+        if user_input.lower() in ("q", "quit", "exit"):
+            break
+        data, meta_data = filter_data(raw_data, user_input, as_of)
+        write_to_console(data, meta_data)
 
 
 def get_args(args):
