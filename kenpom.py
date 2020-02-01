@@ -137,7 +137,6 @@ def filter_data(data, user_input, as_of):
     show_conf = any([is_top_search, is_name_search, is_conf_search and len(names) > 1])
     meta_data = {
         "as_of": as_of,
-        "name_filter": names,  # not currently used, but I think we want it
         "max_name_len": max_name_len,
         "num_teams": len(filtered_data),
         "show_conf": show_conf,
