@@ -19,11 +19,11 @@ import sys
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
+SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width or terminal output
 
 
 def main():
     """Get args, fetch data, filter data, display data."""
-
     while True:
         try:
             user_input = get_args(sys.argv)
@@ -108,10 +108,9 @@ def filter_data(data, user_input, as_of):
     filtered_data = []
     names, top_filter = _get_filters(user_input)
 
-    # Keep track of the longest school name, we'll need this to handle
-    # right-justified formatting in our console output. The shortest
-    # school name is four chars.
-    max_name_len = 4
+    # Keep track of the longest school name. We'll need this to handle
+    # right-justified formatting in our console output.
+    max_name_len = SHORTEST_SCHOOL_NAME
 
     is_top_search = top_filter >= 0
     is_conf_search = CONF_LIST.intersection(set(names))
