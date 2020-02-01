@@ -1,4 +1,4 @@
-# KenPom scraper
+# KenPom scraper 🏀
 
 A little bit of Python to scrape the front page of the wonderfully useful
 [KenPom](https://kenpom.com) site for NCAA basketball statistics. This tool assumes
