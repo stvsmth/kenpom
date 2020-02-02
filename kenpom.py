@@ -13,10 +13,10 @@ TODO:
 from bs4 import BeautifulSoup, SoupStrainer
 from datastructures import (
     KenPom,
-    SCHOOL_ABBREVS,
     CONF_NAMES,
-    translate_names_to_abbrevs,
-    translate_abbrevs_to_names,
+    SCHOOL_DATA_BY_NAME,
+    SCHOOL_DATA_BY_ABBREV,
+    get_names_from_abbrevs,
 )
 from urllib.parse import unquote_plus
 import requests
@@ -97,8 +97,8 @@ def parse_data(html_content):
         # Add school abbrev to our scraped data set; fail if we're missing data.
         # Should be really rare after initial setup, maybe if schools move in/out of D1.
         try:
-            school_abbrev = translate_names_to_abbrevs(school_name)[0]
-            elements.append(school_abbrev)
+            school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
+            elements.append(school_abbrev.upper())
             data.append(KenPom(*elements))
         except IndexError:
             print("ERR: no abbrev {}".format(school_name))
@@ -145,12 +145,12 @@ def filter_data(data, user_input):
     max_name_len = SHORTEST_SCHOOL_NAME
 
     is_top_search = top_filter >= 0
-    is_abbrev_search = bool(SCHOOL_ABBREVS.intersection(set(names)))
+    is_abbrev_search = bool(SCHOOL_DATA_BY_ABBREV.keys() & set(names))
     is_conf_search = bool(CONF_NAMES.intersection(set(names)))
     is_partial_match_search = not any([is_top_search, is_conf_search, is_abbrev_search])
 
     if is_abbrev_search:
-        names = translate_abbrevs_to_names(names) if is_abbrev_search else []
+        names = get_names_from_abbrevs(names) if is_abbrev_search else []
 
     for team in data:
         if is_abbrev_search:

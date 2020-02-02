@@ -1,50 +1,43 @@
 from datastructures import (
+    get_names_from_abbrevs,
+    SCHOOL_DATA_BY_NAME,
+    SCHOOL_DATA_BY_ABBREV,
+    CONF_NAMES,
     SCHOOL_ABBREVS,
-    SCHOOL_NAMES,
-    _school_abbrevs,
-    _school_names,
-)
-from kenpom import (
-    translate_abbrevs_to_names,
-    translate_names_to_abbrevs,
-    NUM_SCHOOLS,
 )
 
 
-def test_translate_names_to_abbrevs():
-    assert [] == translate_abbrevs_to_names(["FOO"])
-    assert ["kansas"] == translate_abbrevs_to_names(["KU"])
-    assert ["kansas"] == translate_abbrevs_to_names(["ku"])
-    assert ["duke", "virginia"] == translate_abbrevs_to_names(["DUKE", "uva"])
-    assert ["virginia tech", "wofford"] == translate_abbrevs_to_names(["VT", "WOF"])
+def test_get_names_from_abbrevs():
+    assert [] == get_names_from_abbrevs([""])
+    assert [] == get_names_from_abbrevs(["FOOBAR"])
+    assert ["colorado"] == get_names_from_abbrevs(["Colo"])
+    assert ["duke", "virginia"] == get_names_from_abbrevs(["DUKE", "UVa"])
+    assert ["virginia tech", "wofford"] == get_names_from_abbrevs(["VT", "wof"])
 
 
-def test_translate_abbrevs_to_names():
-    assert [] == translate_abbrevs_to_names([""])
-    assert ["KU"] == translate_names_to_abbrevs(["Kansas"])
-    assert ["DUKE", "UVA"] == translate_names_to_abbrevs(["duke", "Virginia"])
-    assert ["VT", "WOF"] == translate_names_to_abbrevs(["virginia Tech", "Wofford"])
+def test_derived_data():
+    """Ensure that our derived data transformations worked.
+
+    These are just a quick sanity check to make sure we end up with the data
+    format we intended when we derive alternate structures from
+    SCHOOL_DATA_BY_ABBREV
+    """
+    assert SCHOOL_DATA_BY_ABBREV["wof"]["name"] == "wofford"
+    assert SCHOOL_DATA_BY_NAME["wofford"]["abbrev"] == "wof"
+    assert len(SCHOOL_DATA_BY_NAME) == len(SCHOOL_DATA_BY_ABBREV)
+    assert "vt" in SCHOOL_ABBREVS
+    assert "acc" in CONF_NAMES
 
 
-def test_for_duplicates_and_bad_d1_count():
-    num_abbrevs = len(SCHOOL_ABBREVS)
-    num_names = len(SCHOOL_NAMES)
+def test_school_data_structure():
+    """Verify main structure is all lowercase with no extra spaces."""
 
-    if num_abbrevs == num_names:
-        assert num_names == NUM_SCHOOLS, "Looks like school added or removed"
-    else:
-        for item in (_school_abbrevs, _school_names):
-            seen = {}
-            dupes = []
-            for x in list(item):
-                if x not in seen:
-                    seen[x] = 1
-                else:
-                    if seen[x] == 1:
-                        dupes.append(x)
-                    seen[x] += 1
-
-            msg = "names, abbrev mismatch {} != {}. Dupe: {}".format(
-                num_names, num_abbrevs, dupes
-            )
-            assert num_abbrevs == num_names, msg
+    # We'll eventually have code to regenerate this data structure, but we're fixing it
+    # manually as issues arise, mostly in abbrevs. Until it's automated, test our edits.
+    for k, data in SCHOOL_DATA_BY_ABBREV.items():
+        assert k == k.lower().strip()
+        assert k == k.lower().strip()
+        for key, value in data.items():
+            assert key == key.lower().strip()
+            if type(value) == str:
+                assert value == value.lower().strip()

@@ -1,20 +1,14 @@
 """Tests for kenpom scraping, using locally stored data."""
 
 from contextlib import contextmanager
-from datastructures import CONF_DATA
 from io import StringIO
-from kenpom import (
-    parse_data,
-    filter_data,
-    write_to_console,
-    NUM_SCHOOLS,
-)
+from kenpom import parse_data, filter_data, write_to_console, NUM_SCHOOLS, get_args
 from pathlib import Path
 import os
 import sys
 
-NUM_ACC_TEAMS = len(CONF_DATA["acc"])
-NUM_SEC_TEAMS = len(CONF_DATA["sec"])
+NUM_ACC_TEAMS = 15
+NUM_SEC_TEAMS = 14
 NUM_TEAMS_W_VALLEY_IN_NAME = 3
 
 
@@ -251,6 +245,12 @@ def test_write_to_console_basic_conference():
     assert "    Wake Forest   104  10-11" in out_text
     assert "       Miami FL   117   11-9" in out_text
     assert " Boston College   162  11-11" in out_text
+
+
+def test_get_args_from_args():
+    assert get_args(["prog", "all"]) == ("0", False)
+    assert get_args(["prog", "7"]) == ("7", False)
+    assert get_args(["prog", "ucla,penn"]) == ("ucla,penn", False)
 
 
 @contextmanager
