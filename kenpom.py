@@ -26,8 +26,9 @@ def main():
     """Get args, fetch data, filter data, display data."""
     page_content = fetch_content(URL)
     raw_data, as_of = parse_data(page_content)
-    while True:
-        user_input = get_args(sys.argv)
+    interactive = True
+    while interactive:
+        user_input, interactive = get_args(sys.argv)
         if user_input.lower() in ("q", "quit", "exit"):
             break
         data, meta_data = filter_data(raw_data, user_input, as_of)
@@ -37,8 +38,10 @@ def main():
 def get_args(args):
     """Pull args from command-line, or prompt user if no args."""
     if len(args) == 2:
+        interactive = False
         user_input = args[1]
     else:
+        interactive = True
         user_input = (
             input("Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
         )
@@ -46,7 +49,7 @@ def get_args(args):
     # Convert All input to our integer equivalent
     if user_input.lower() == "all":
         user_input = "0"
-    return user_input
+    return user_input, interactive
 
 
 def fetch_content(url):
