@@ -458,8 +458,8 @@ CONF_NAMES = set(CONF_DATA.keys())
 # Then we use itertools.chain.from_iterable to flatten the list
 # see https://stackoverflow.com/a/953097
 
-# We have "private" lists (rather than sets) to allow us to use these in `main` to
-# look for duplicates.
+# We have "private" lists (rather than sets) to allow us to use these in our tests
+# find look for duplicates or missing data.
 _school_abbrevs = list(
     itertools.chain.from_iterable(
         [[name for name in conf.keys()] for conf in CONF_DATA.values()]

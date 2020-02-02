@@ -33,7 +33,7 @@ def main():
     page_content = fetch_content(URL)
     raw_data, as_of = parse_data(page_content)
     interactive = True
-    print("\n {}\n".format(as_of))
+    print("   ", as_of)
     while interactive:
         user_input, interactive = get_args(sys.argv)
         if user_input.lower() in ("q", "quit", "exit"):
@@ -50,7 +50,7 @@ def get_args(args):
     else:
         interactive = True
         user_input = (
-            input("Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
+            input("    Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
         )
 
     # Convert All input to our integer equivalent
@@ -172,13 +172,9 @@ def filter_data(data, user_input):
             if len(filtered_data) == top_filter:
                 break
 
-    show_conf = any(
-        [is_top_search, is_partial_match_search, is_conf_search and len(names) > 1]
-    )
     meta_data = {
         "max_name_len": max_name_len,
         "num_teams": len(filtered_data),
-        "show_conf": show_conf,
         "top_filter": top_filter,
     }
     return filtered_data, meta_data
@@ -189,12 +185,12 @@ def write_to_console(data, meta_data):
     print()  # provide white-space around output
     for team in data:
         print(
-            "{team:>{len}} {rank:>5} {record:>6}  {conf}".format(
+            "   {team:>{len}} {rank:>5} {record:>6}  {conf}".format(
                 len=meta_data["max_name_len"],
                 team=team.name,
                 rank=team.rank,
                 record=team.record,
-                conf=team.conf if meta_data["show_conf"] else "",
+                conf=team.conf,
             )
         )
     print()  # provide white-space around output
