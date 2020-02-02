@@ -82,9 +82,9 @@ def test_parse_data():
 
 def test_filter_data_conf_capitalization():
     all_data, as_of = PARSED_CONTENT
-    upper, _ = filter_data(all_data, "meac", as_of)
-    lower, _ = filter_data(all_data, "MEAC", as_of)
-    mixed, _ = filter_data(all_data, "Meac", as_of)
+    upper, _ = filter_data(all_data, "meac")
+    lower, _ = filter_data(all_data, "MEAC")
+    mixed, _ = filter_data(all_data, "Meac")
     assert upper == lower == mixed
 
 
@@ -95,35 +95,35 @@ def test_filter_handles_top_n():
     # instead of 25. Strings being iterable and all that.
     all_data, as_of = PARSED_CONTENT
 
-    data, _ = filter_data(all_data, "0", as_of)
+    data, _ = filter_data(all_data, "0")
     assert len(data) == NUM_SCHOOLS
 
-    data, _ = filter_data(all_data, "1", as_of)
+    data, _ = filter_data(all_data, "1")
     assert len(data) == 1
 
-    data, _ = filter_data(all_data, "7", as_of)
+    data, _ = filter_data(all_data, "7")
     assert len(data) == 7
 
-    data, _ = filter_data(all_data, "25", as_of)
+    data, _ = filter_data(all_data, "25")
     assert len(data) == 25
 
-    data, _ = filter_data(all_data, "111", as_of)
+    data, _ = filter_data(all_data, "111")
     assert len(data) == 111
 
 
 def test_filter_data_ensure_abbrev_superiority():
     all_data, as_of = PARSED_CONTENT
 
-    data, _ = filter_data(all_data, "utah", as_of)
+    data, _ = filter_data(all_data, "utah")
     assert len(data) == 1
 
-    data, _ = filter_data(all_data, "amer", as_of)
+    data, _ = filter_data(all_data, "amer")
     assert len(data) == 1
 
 
 def test_filter_data_school_by_name():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, "valley", as_of)
+    data, _ = filter_data(all_data, "valley")
 
     assert len(data) == NUM_TEAMS_W_VALLEY_IN_NAME
     names = [x.name for x in data]
@@ -132,45 +132,45 @@ def test_filter_data_school_by_name():
     assert "Mississippi Valley St" in names
 
     # Check for multiple names input
-    data, _ = filter_data(all_data, "wyoming,wofford", as_of)
+    data, _ = filter_data(all_data, "wyoming,wofford")
     assert len(data) == 2
     assert data[0].name == "Wofford"
     assert data[1].name == "Wyoming"
 
     # Check for quoting (single and double) and url encoding
-    data, _ = filter_data(all_data, "'Virginia Tech'", as_of)
+    data, _ = filter_data(all_data, "'Virginia Tech'")
     assert len(data) == 1
     assert data[0].name == "Virginia Tech"
 
-    data, _ = filter_data(all_data, '"Virginia Tech"', as_of)
+    data, _ = filter_data(all_data, '"Virginia Tech"')
     assert len(data) == 1
     assert data[0].name == "Virginia Tech"
 
-    data, _ = filter_data(all_data, "virginia+tech", as_of)
+    data, _ = filter_data(all_data, "virginia+tech")
     assert len(data) == 1
     assert data[0].name == "Virginia Tech"
 
 
 def test_filter_data_abbrev_vs_name():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, "mich,msu", as_of)
+    data, _ = filter_data(all_data, "mich,msu")
     assert len(data) == 2
 
 
 def test_filter_data_school_abbrevs():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, "vt,wof", as_of)
+    data, _ = filter_data(all_data, "vt,wof")
 
     assert len(data) == 2
     assert data[0].name == "Virginia Tech"
     assert data[1].name == "Wofford"
 
-    data, _ = filter_data(all_data, "VT,WOF", as_of)
+    data, _ = filter_data(all_data, "VT,WOF")
     assert len(data) == 2
     assert data[0].name == "Virginia Tech"
     assert data[1].name == "Wofford"
 
-    data, _ = filter_data(all_data, "Vt,Wof", as_of)
+    data, _ = filter_data(all_data, "Vt,Wof")
     assert len(data) == 2
     assert data[0].name == "Virginia Tech"
     assert data[1].name == "Wofford"
@@ -179,7 +179,7 @@ def test_filter_data_school_abbrevs():
 def test_write_to_console_all():
     all_data, as_of = PARSED_CONTENT
 
-    data, meta_data = filter_data(all_data, "0", as_of)
+    data, meta_data = filter_data(all_data, "0")
 
     # Grab just # 4 for cleaner diff on test failure.
     data = data[3:4]
@@ -193,7 +193,7 @@ def test_write_to_console_all():
 
 def test_write_to_console_top_5():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, "5", as_of)
+    data, meta_data = filter_data(all_data, "5")
 
     assert len(data) == 5
     assert data[1].name == "Duke"
@@ -208,7 +208,7 @@ def test_write_to_console_top_5():
 
 def test_write_to_console_multi_conference():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, "ACC,SEC", as_of)
+    data, meta_data = filter_data(all_data, "ACC,SEC")
 
     assert len(data) == NUM_SEC_TEAMS + NUM_ACC_TEAMS
     assert data[16].name == "South Carolina"
@@ -222,15 +222,14 @@ def test_write_to_console_multi_conference():
 
 def test_write_to_console_basic_conference():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, "acc", as_of)
+    data, meta_data = filter_data(all_data, "acc")
 
     with captured_output() as (out, err):
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
     acc_teams = out_text.strip().split("\n")
-    # There are 15 teams in the ACC, plus two lines for the as_of data
-    assert NUM_ACC_TEAMS + 2 == len(acc_teams), "Conference filter broken"
+    assert NUM_ACC_TEAMS == len(acc_teams), "Conference filter broken"
 
     # Check formatting, values, be sure to test team > #20
     # so we know that we're bypassing the intermittent headers
@@ -252,8 +251,6 @@ def test_write_to_console_basic_conference():
     assert "    Wake Forest   104  10-11" in out_text
     assert "       Miami FL   117   11-9" in out_text
     assert " Boston College   162  11-11" in out_text
-
-    assert "Data through games of Saturday, February 1" in out_text
 
 
 @contextmanager

@@ -33,11 +33,12 @@ def main():
     page_content = fetch_content(URL)
     raw_data, as_of = parse_data(page_content)
     interactive = True
+    print("\n {}\n".format(as_of))
     while interactive:
         user_input, interactive = get_args(sys.argv)
         if user_input.lower() in ("q", "quit", "exit"):
             break
-        data, meta_data = filter_data(raw_data, user_input, as_of)
+        data, meta_data = filter_data(raw_data, user_input)
         write_to_console(data, meta_data)
 
 
@@ -134,7 +135,7 @@ def _get_filters(user_input):
         return user_input, -1
 
 
-def filter_data(data, user_input, as_of):
+def filter_data(data, user_input):
     """Filter data before we display."""
     filtered_data = []
     names, top_filter = _get_filters(user_input)
@@ -175,7 +176,6 @@ def filter_data(data, user_input, as_of):
         [is_top_search, is_partial_match_search, is_conf_search and len(names) > 1]
     )
     meta_data = {
-        "as_of": as_of,
         "max_name_len": max_name_len,
         "num_teams": len(filtered_data),
         "show_conf": show_conf,
@@ -198,7 +198,6 @@ def write_to_console(data, meta_data):
             )
         )
     print()  # provide white-space around output
-    print(meta_data["as_of"])
     return data, meta_data
 
 
