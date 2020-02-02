@@ -69,7 +69,7 @@ We'll be leaving out the footer for the remaining examples.
 
 This is probably the most useful mode. Your team is playing Duke? How do they match up?
 
-    (kenpom) $ python kenpom.py duke,woff
+    (kenpom) $ python kenpom.py duke,wof
 
         Duke     2   17-3  ACC
      Wofford   147   14-8  SC

@@ -1,37 +1,21 @@
-"""Tests for kenpom scraping, using locally stored data.
-
-Expected Output for ACC
-
-               Duke     1   23-2
-           Virginia     2   22-2
-     North Carolina     8   20-5
-      Virginia Tech    12   20-5
-         Louisville    14   18-8
-         Florida St    20   20-5
-            Clemson    30  15-10
-  North Carolina St    35   18-8
-           Syracuse    43   17-8
-           Miami FL    74  11-14
-         Notre Dame    79  13-12
-         Pittsburgh    81  12-14
-       Georgia Tech   109  11-15
-     Boston College   112  13-11
-        Wake Forest   187   9-15
-
-Data includes 17 of 18 games played on Sunday, February 17
-"""
+"""Tests for kenpom scraping, using locally stored data."""
 
 from contextlib import contextmanager
+from datastructures import CONF_DATA
 from io import StringIO
-from kenpom import parse_data, filter_data, write_to_console
+from kenpom import (
+    parse_data,
+    filter_data,
+    write_to_console,
+    NUM_SCHOOLS,
+)
 from pathlib import Path
 import os
 import sys
 
-
-NUM_ACC_TEAMS = 15
-NUM_AMER_TEAMS = 12
-NUM_UTAH_NAMES = 4
+NUM_ACC_TEAMS = len(CONF_DATA["acc"])
+NUM_SEC_TEAMS = len(CONF_DATA["sec"])
+NUM_TEAMS_W_VALLEY_IN_NAME = 3
 
 
 def _fetch_test_content():
@@ -47,65 +31,61 @@ def _fetch_test_content():
         return data
 
 
-# Read the file once for these tests
+# FIXME: Fixture Me!!!
+# Parsing content is REALLY expensive (much more so than reading content)
 PARSED_CONTENT = parse_data(_fetch_test_content())
 
 
 def test_parse_data():
     all_data, as_of = PARSED_CONTENT
 
-    # Test the first row, all columns to make sure we're matched
-    assert "Virginia" == all_data[1].name
-    assert "2" == all_data[1].rank
-    assert "ACC" == all_data[1].conf
-    assert "22-2" == all_data[1].record
-    assert "+34.46" == all_data[1].eff_margin
-    assert "120.8" == all_data[1].offense
-    assert "5" == all_data[1].off_rank
-    assert "86.3" == all_data[1].defense
-    assert "3" == all_data[1].def_rank
+    # Quick check to make sure our data is in sync with ranks, if something goes
+    # haywire, this test can tell us where in the sequence of schools it went sideways.
+    for i in range(NUM_SCHOOLS):
+        team = all_data[i]
+        assert str(i + 1) == team.rank, team
 
-    assert "59.4" == all_data[1].tempo
-    assert "353" == all_data[1].tempo_rank
-    assert "+.030" == all_data[1].luck
-    assert "110" == all_data[1].luck_rank
+    # Test both above and below the first "page break". Do a full check of every
+    # column on one of these, to ensure we have the correct mappings
+    num_40 = all_data[39]
+    assert "Northern Iowa" == num_40.name
+    assert "40" == num_40.rank
 
-    assert "+7.96" == all_data[1].sos_eff_margin
-    assert "36" == all_data[1].sos_eff_margin_rank
-    assert "107.9" == all_data[1].sos_off
-    assert "43" == all_data[1].sos_off_rank
-    assert "100.0" == all_data[1].sos_def
-    assert "33" == all_data[1].sos_def_rank
+    num_41 = all_data[40]
+    assert "41" == num_41.rank
+    assert "Florida" == num_41.name
+    assert "SEC" == num_41.conf
+    assert "13-8" == num_41.record
+    assert "+15.42" == num_41.eff_margin
+    assert "111.4" == num_41.offense
+    assert "30" == num_41.off_rank
+    assert "96.0" == num_41.defense
+    assert "70" == num_41.def_rank
 
-    assert "-3.07" == all_data[1].sos_non_conf
-    assert "264" == all_data[1].sos_non_conf_rank
+    assert "65.6" == num_41.tempo
+    assert "295" == num_41.tempo_rank
+    assert "-.032" == num_41.luck
+    assert "243" == num_41.luck_rank
 
-    # ... sentimental check
-    assert "Virginia Tech" == all_data[11].name
-    assert "12" == all_data[11].rank
-    assert "329" == all_data[11].sos_non_conf_rank
+    assert "+7.76" == num_41.sos_eff_margin
+    assert "27" == num_41.sos_eff_margin_rank
+    assert "106.8" == num_41.sos_off
+    assert "15" == num_41.sos_off_rank
+    assert "99.1" == num_41.sos_def
+    assert "42" == num_41.sos_def_rank
 
-    # Quick test row before the header
-    assert "Lipscomb" == all_data[39].name
-    assert "40" == all_data[39].rank
-    assert "27" == all_data[39].sos_non_conf_rank
-
-    # Quick test row after the header
-    assert "TCU" == all_data[40].name
-    assert "41" == all_data[40].rank
-    assert "185" == all_data[40].sos_non_conf_rank
+    assert "+5.90" == num_41.sos_non_conf
+    assert "35" == num_41.sos_non_conf_rank
+    # Not in KenPom, we added when we parsed
+    assert "FLA" == num_41.abbrev
 
 
 def test_filter_data_conf_capitalization():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, "amer", as_of)
-
-    # Test using `amer` since KenPom doesn't capitalize all conference names
-    # (only the acronyms, which are most ... eg American Athletic Conference
-    # is displayed as `Amer`.
-    assert len(data) == NUM_AMER_TEAMS
-    assert data[0].name == "Houston"
-    assert data[1].name == "Cincinnati"
+    upper, _ = filter_data(all_data, "meac", as_of)
+    lower, _ = filter_data(all_data, "MEAC", as_of)
+    mixed, _ = filter_data(all_data, "Meac", as_of)
+    assert upper == lower == mixed
 
 
 def test_filter_handles_top_n():
@@ -116,7 +96,7 @@ def test_filter_handles_top_n():
     all_data, as_of = PARSED_CONTENT
 
     data, _ = filter_data(all_data, "0", as_of)
-    assert len(data) == 353
+    assert len(data) == NUM_SCHOOLS
 
     data, _ = filter_data(all_data, "1", as_of)
     assert len(data) == 1
@@ -131,16 +111,25 @@ def test_filter_handles_top_n():
     assert len(data) == 111
 
 
-def test_filter_data_school_names():
+def test_filter_data_ensure_abbrev_superiority():
     all_data, as_of = PARSED_CONTENT
-    data, _ = filter_data(all_data, "utah", as_of)
 
-    # Test using `amer` since KenPom doesn't capitalize all conference names
-    # (only the acronyms, which are most ... eg American Athletic Conference
-    # is displayed as `Amer`.
-    assert len(data) == NUM_UTAH_NAMES
-    assert data[1].name == "Utah Valley"
-    assert data[3].name == "Southern Utah"
+    data, _ = filter_data(all_data, "utah", as_of)
+    assert len(data) == 1
+
+    data, _ = filter_data(all_data, "amer", as_of)
+    assert len(data) == 1
+
+
+def test_filter_data_school_by_name():
+    all_data, as_of = PARSED_CONTENT
+    data, _ = filter_data(all_data, "valley", as_of)
+
+    assert len(data) == NUM_TEAMS_W_VALLEY_IN_NAME
+    names = [x.name for x in data]
+    assert "Utah Valley" in names
+    assert "UT Rio Grande Valley" in names
+    assert "Mississippi Valley St" in names
 
     # Check for multiple names input
     data, _ = filter_data(all_data, "wyoming,wofford", as_of)
@@ -162,6 +151,31 @@ def test_filter_data_school_names():
     assert data[0].name == "Virginia Tech"
 
 
+def test_filter_data_abbrev_vs_name():
+    all_data, as_of = PARSED_CONTENT
+    data, _ = filter_data(all_data, "mich,msu", as_of)
+    assert len(data) == 2
+
+
+def test_filter_data_school_abbrevs():
+    all_data, as_of = PARSED_CONTENT
+    data, _ = filter_data(all_data, "vt,wof", as_of)
+
+    assert len(data) == 2
+    assert data[0].name == "Virginia Tech"
+    assert data[1].name == "Wofford"
+
+    data, _ = filter_data(all_data, "VT,WOF", as_of)
+    assert len(data) == 2
+    assert data[0].name == "Virginia Tech"
+    assert data[1].name == "Wofford"
+
+    data, _ = filter_data(all_data, "Vt,Wof", as_of)
+    assert len(data) == 2
+    assert data[0].name == "Virginia Tech"
+    assert data[1].name == "Wofford"
+
+
 def test_write_to_console_all():
     all_data, as_of = PARSED_CONTENT
 
@@ -174,7 +188,7 @@ def test_write_to_console_all():
         out_text = out.getvalue()
 
     text_without_footer = out_text.split("\n")[1]
-    assert "Michigan St     4   21-5  B10" in text_without_footer
+    assert "San Diego St     4   23-0  MWC" in text_without_footer
 
 
 def test_write_to_console_top_5():
@@ -182,28 +196,28 @@ def test_write_to_console_top_5():
     data, meta_data = filter_data(all_data, "5", as_of)
 
     assert len(data) == 5
-    assert data[1].name == "Virginia"
-    assert data[4].name == "Kentucky"
+    assert data[1].name == "Duke"
+    assert data[4].name == "Gonzaga"
 
     with captured_output() as (out, err):
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
-    assert "Michigan St     4   21-5  B10" in out_text
+    assert "San Diego St     4   23-0  MWC" in out_text
 
 
 def test_write_to_console_multi_conference():
     all_data, as_of = PARSED_CONTENT
-    data, meta_data = filter_data(all_data, "ACC,Amer", as_of)
+    data, meta_data = filter_data(all_data, "ACC,SEC", as_of)
 
-    assert len(data) == NUM_AMER_TEAMS + NUM_ACC_TEAMS
-    assert data[19].name == "Tulsa"
-    assert data[24].name == "Wake Forest"
+    assert len(data) == NUM_SEC_TEAMS + NUM_ACC_TEAMS
+    assert data[16].name == "South Carolina"
+    assert data[19].name == "Clemson"
     with captured_output() as (out, err):
         write_to_console(data, meta_data)
         out_text = out.getvalue()
 
-    assert "Duke     1   23-2  ACC" in out_text
+    assert "Duke     2   18-3  ACC" in out_text
 
 
 def test_write_to_console_basic_conference():
@@ -222,13 +236,24 @@ def test_write_to_console_basic_conference():
     # so we know that we're bypassing the intermittent headers
     # include longest (NCST) and short team names (Duke), which
     # define width of output.
-    assert "               Duke     1   23-2" in out_text
-    assert "           Virginia     2   22-2" in out_text
-    assert "      Virginia Tech    12   20-5" in out_text
-    assert "  North Carolina St    35   18-8" in out_text
-    assert "        Wake Forest   187   9-15" in out_text
 
-    assert "Data includes 17 of 18 games played on Sunday, February 17" in out_text
+    assert "           Duke     2   18-3" in out_text
+    assert "     Louisville     8   19-3" in out_text
+    assert "     Florida St    18   18-3" in out_text
+    assert "       Syracuse    53   13-9" in out_text
+    assert "       Virginia    54   14-6" in out_text
+    assert "     Notre Dame    57   13-8" in out_text
+    assert "       NC State    70   14-8" in out_text
+    assert "     Pittsburgh    79   13-8" in out_text
+    assert "  Virginia Tech    84   14-8" in out_text
+    assert "   Georgia Tech    91  10-12" in out_text
+    assert "        Clemson    95  11-10" in out_text
+    assert " North Carolina    97  10-11" in out_text
+    assert "    Wake Forest   104  10-11" in out_text
+    assert "       Miami FL   117   11-9" in out_text
+    assert " Boston College   162  11-11" in out_text
+
+    assert "Data through games of Saturday, February 1" in out_text
 
 
 @contextmanager

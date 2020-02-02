@@ -11,7 +11,13 @@ TODO:
 """
 
 from bs4 import BeautifulSoup, SoupStrainer
-from const import KenPom, CONF_LIST
+from datastructures import (
+    KenPom,
+    SCHOOL_ABBREVS,
+    CONF_NAMES,
+    translate_names_to_abbrevs,
+    translate_abbrevs_to_names,
+)
 from urllib.parse import unquote_plus
 import requests
 import sys
@@ -74,14 +80,30 @@ def parse_data(html_content):
 
     soup = BeautifulSoup(html_content, "html.parser", parse_only=SoupStrainer("tr"))
     data = []
+    err = False
     for elements in soup:
         # Rely on the fact that relevant rows have 22 cols and other tr elements don't
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
         # Note, we strip out any "blank" column as well (such as the first column)
-        elements = [e.text for e in elements if hasattr(e, "text")]
-        data.append(KenPom(*elements))
+        elements = [e.text.strip() for e in elements if hasattr(e, "text")]
 
+        # Replace the trailing period in `St.` Why? we right-justify text and the
+        # justification looks  horrible if the last char is a period. Be sure to store
+        # the mutated school name, but also grab a copy for better readability.
+        elements[1] = school_name = elements[1].replace(".", "")
+
+        # Add school abbrev to our scraped data set; fail if we're missing data.
+        # Should be really rare after initial setup, maybe if schools move in/out of D1.
+        try:
+            school_abbrev = translate_names_to_abbrevs(school_name)[0]
+            elements.append(school_abbrev)
+            data.append(KenPom(*elements))
+        except IndexError:
+            print("ERR: no abbrev {}".format(school_name))
+            err = True
+    if err:
+        sys.exit(1)
     return data, as_of
 
 
@@ -101,7 +123,7 @@ def _get_filters(user_input):
         return [], top_filter
     except ValueError:
         # Normalize the user input from command-line (or `input`)
-        user_input = [c.upper() for c in user_input.split(",")]
+        user_input = [c.lower() for c in user_input.split(",")]
 
         # Remove any quotes used in school name input
         user_input = [u.replace('"', "").replace("'", "") for u in user_input]
@@ -122,14 +144,20 @@ def filter_data(data, user_input, as_of):
     max_name_len = SHORTEST_SCHOOL_NAME
 
     is_top_search = top_filter >= 0
-    is_conf_search = CONF_LIST.intersection(set(names))
-    is_name_search = not is_top_search and not is_conf_search
+    is_abbrev_search = bool(SCHOOL_ABBREVS.intersection(set(names)))
+    is_conf_search = bool(CONF_NAMES.intersection(set(names)))
+    is_partial_match_search = not any([is_top_search, is_conf_search, is_abbrev_search])
+
+    if is_abbrev_search:
+        names = translate_abbrevs_to_names(names) if is_abbrev_search else []
 
     for team in data:
-        if is_conf_search:
-            is_included = team.conf.upper() in names
-        elif is_name_search:
-            is_included = any([n in team.name.upper() for n in names])
+        if is_abbrev_search:
+            is_included = any([n == team.name.lower() for n in names])
+        elif is_conf_search:
+            is_included = team.conf.lower() in names
+        elif is_partial_match_search:
+            is_included = any([n in team.name.lower() for n in names])
         else:
             is_included = False
 
@@ -143,7 +171,9 @@ def filter_data(data, user_input, as_of):
             if len(filtered_data) == top_filter:
                 break
 
-    show_conf = any([is_top_search, is_name_search, is_conf_search and len(names) > 1])
+    show_conf = any(
+        [is_top_search, is_partial_match_search, is_conf_search and len(names) > 1]
+    )
     meta_data = {
         "as_of": as_of,
         "max_name_len": max_name_len,
@@ -161,9 +191,7 @@ def write_to_console(data, meta_data):
         print(
             "{team:>{len}} {rank:>5} {record:>6}  {conf}".format(
                 len=meta_data["max_name_len"],
-                team=team.name.replace(
-                    ".", ""
-                ),  # dot in Florida St. looks funny in right-justified output
+                team=team.name,
                 rank=team.rank,
                 record=team.record,
                 conf=team.conf if meta_data["show_conf"] else "",
