@@ -3,5 +3,5 @@ do
   IFS="_" read param comment <<< "${item}"
   echo "$comment"
   echo "    (kenpom) $ python kenpom.py $param"
-  ../kenpom.py "$param"
-done < doc-gen.txt
+  ./kenpom.py "$param"
+done < tools/doc-gen.txt

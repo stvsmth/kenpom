@@ -9,4 +9,4 @@ color_#### ... Whoops, colo is a school code, so expand the search term.
 'NORTH DAKOTA'_#### .. or single quotes ...
 Virginia+Tech_#### ... or plus sign if you forget to start with a quote
 meac_#### Search by a conference
-b12,ACC_#### ... or two conferences
+b12,ACC,B10_#### ... or several conferences
