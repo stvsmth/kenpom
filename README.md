@@ -187,5 +187,6 @@ mode type `q`, `quit`, or `exit`.
      West Virginia     7   17-4  B12
         Louisville     8   19-3  ACC
        Michigan St     9   16-6  B10
+            [snip]   ...    ...  ...
           Nebraska   136   7-15  B10
     Boston College   162  11-11  ACC
