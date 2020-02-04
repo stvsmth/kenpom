@@ -87,12 +87,12 @@ def parse_data(html_content):
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
         # Note, we strip out any "blank" column as well (such as the first column)
-        elements = [e.text.strip() for e in elements if hasattr(e, "text")]
+        text_elements = [e.text.strip() for e in elements if hasattr(e, "text")]
 
         # Replace the trailing period in `St.` Why? we right-justify text and the
         # justification looks  horrible if the last char is a period. Be sure to store
         # the mutated school name, but also grab a copy for better readability.
-        elements[1] = school_name = elements[1].replace(".", "")
+        text_elements[1] = school_name = text_elements[1].replace(".", "")
 
         # Add school abbrev to our scraped data set; fail if we're missing data.
         # Should be really rare after initial setup, maybe if schools move in/out of D1.
