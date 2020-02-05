@@ -69,7 +69,6 @@ mode type `q`, `quit`, or `exit`.
 
     Top `n`, 0 for all, school(s), or conference(s) [25]: q
 
-(master|✔)% tools/doc-gen.sh
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school abbreviation, 'cause typing is hard
     (kenpom) $ python kenpom.py umbc
