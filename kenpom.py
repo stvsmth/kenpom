@@ -4,10 +4,10 @@
 
 TODO:
 * Clean up arg handling, but retain option for user_input on no args
-  (essential for easy use in primary use case: iPhone/Pythonista).
+  (essential for easy use in primary use case: iPhone/PyTo).
 * Use conf list for input validation? 2) Generate list via an arg (--list)
 * Provide configuration object to drive display of columns. We currently
-  only show rank, W/L, and (sometimes) conference.
+  only show rank, W/L, and conference.
 """
 
 from bs4 import BeautifulSoup, SoupStrainer
@@ -151,6 +151,7 @@ def filter_data(data, user_input):
 
     elif conf_names := CONF_NAMES.intersection(set(names)):
         filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}
+
     else:
         filtered_data = {
             k: v for k, v in data.items() for n in names if n in v.name.lower()
