@@ -16,7 +16,6 @@ from datastructures import (
     CONF_NAMES,
     SCHOOL_DATA_BY_NAME,
     SCHOOL_DATA_BY_ABBREV,
-    get_names_from_abbrevs,
 )
 from urllib.parse import unquote_plus
 import requests
@@ -99,13 +98,15 @@ def parse_data(html_content):
         try:
             school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
             text_elements.append(school_abbrev.upper())
-            data.append(KenPom(*text_elements))
+            data.append({school_abbrev: KenPom(*text_elements)})
         except IndexError:
             print("ERR: no abbrev {}".format(school_name))
             err = True
     if err:
         sys.exit(1)
-    return data, as_of
+
+    keyed_data = dict((key, d[key]) for d in data for key in d)
+    return keyed_data, as_of
 
 
 def _get_filters(user_input):
@@ -137,40 +138,27 @@ def _get_filters(user_input):
 
 def filter_data(data, user_input):
     """Filter data before we display."""
-    filtered_data = []
     names, top_filter = _get_filters(user_input)
+
+    if top_filter == 0:
+        filtered_data = data
+
+    elif top_filter > 0:
+        filtered_data = {k: v for k, v in data.items() if v.rank <= top_filter}
+
+    elif abbrevs := SCHOOL_DATA_BY_ABBREV.keys() & set(names):
+        filtered_data = {k: v for k, v in data.items() if k in abbrevs}
+
+    elif conf_names := CONF_NAMES.intersection(set(names)):
+        filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}
+    else:
+        filtered_data = {
+            k: v for k, v in data.items() for n in names if n in v.name.lower()
+        }
 
     # Keep track of the longest school name. We'll need this to handle
     # right-justified formatting in our console output.
-    max_name_len = SHORTEST_SCHOOL_NAME
-
-    is_top_search = top_filter >= 0
-    is_abbrev_search = bool(SCHOOL_DATA_BY_ABBREV.keys() & set(names))
-    is_conf_search = bool(CONF_NAMES.intersection(set(names)))
-    is_partial_match_search = not any([is_top_search, is_conf_search, is_abbrev_search])
-
-    if is_abbrev_search:
-        names = get_names_from_abbrevs(names) if is_abbrev_search else []
-
-    for team in data:
-        if is_abbrev_search:
-            is_included = any([n == team.name.lower() for n in names])
-        elif is_conf_search:
-            is_included = team.conf.lower() in names
-        elif is_partial_match_search:
-            is_included = any([n in team.name.lower() for n in names])
-        else:
-            is_included = False
-
-        if is_top_search or is_included:
-            curr_team_len = len(team.name) + 1
-            max_name_len = (
-                curr_team_len if curr_team_len > max_name_len else max_name_len
-            )
-            filtered_data.append(team)
-
-            if len(filtered_data) == top_filter:
-                break
+    max_name_len = max({len(v.name) for v in filtered_data.values()})
 
     meta_data = {
         "max_name_len": max_name_len,
@@ -183,7 +171,7 @@ def filter_data(data, user_input):
 def write_to_console(data, meta_data):
     """Dump the data to standard out."""
     print()  # provide white-space around output
-    for team in data:
+    for team in list(data.values()):
         print(
             "   {team:>{len}} {rank:>5} {record:>6}  {conf}".format(
                 len=meta_data["max_name_len"],

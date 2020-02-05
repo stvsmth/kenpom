@@ -1,18 +1,9 @@
 from datastructures import (
-    get_names_from_abbrevs,
     SCHOOL_DATA_BY_NAME,
     SCHOOL_DATA_BY_ABBREV,
     CONF_NAMES,
     SCHOOL_ABBREVS,
 )
-
-
-def test_get_names_from_abbrevs():
-    assert [] == get_names_from_abbrevs([""])
-    assert [] == get_names_from_abbrevs(["FOOBAR"])
-    assert ["colorado"] == get_names_from_abbrevs(["Colo"])
-    assert ["duke", "virginia"] == get_names_from_abbrevs(["DUKE", "UVa"])
-    assert ["virginia tech", "wofford"] == get_names_from_abbrevs(["VT", "wof"])
 
 
 def test_derived_data():

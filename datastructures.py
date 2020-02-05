@@ -1,35 +1,46 @@
-from collections import namedtuple
+import dataclasses
 
-# TODO: Convert this to a dataclass
-KenPom = namedtuple(
-    "KenPom",
-    [
-        "rank",
-        "name",
-        "conf",
-        "record",
-        "eff_margin",
-        "offense",
-        "off_rank",
-        "defense",
-        "def_rank",
-        "tempo",
-        "tempo_rank",
-        "luck",
-        "luck_rank",
-        "sos_eff_margin",
-        "sos_eff_margin_rank",
-        "sos_off",
-        "sos_off_rank",
-        "sos_def",
-        "sos_def_rank",
-        "sos_non_conf",
-        "sos_non_conf_rank",
-        # NOTE: abbrev is NOT in source KenPom data, we append it so we can do searches
-        # based on score-ticker names (KU, VT, UVA, etc)
-        "abbrev",
-    ],
-)
+
+@dataclasses.dataclass
+class KenPom:
+    """Lightweight wrapper around all available KenPom stats."""
+
+    rank: int
+    name: str
+    conf: str
+    record: str
+    eff_margin: float
+    offense: float
+    off_rank: int
+    defense: float
+    def_rank: int
+    tempo: float
+    tempo_rank: int
+    luck: float
+    luck_rank: int
+    sos_eff_margin: float
+    sos_eff_margin_rank: int
+    sos_off: float
+    sos_off_rank: int
+    sos_def: float
+    sos_def_rank: int
+    sos_non_conf: float
+    sos_non_conf_rank: int
+    # NOTE: abbrev is NOT in source KenPom data
+    # We append it so we can do searches based on score-ticker names (KU, VT, UVA, etc)
+    abbrev: str
+
+    def __post_init__(self):
+        """Type incoming data.
+
+        We're scraping DOM elements `text` values, so everything comes in as
+        text, but we may want actual values (think ACC avg offence rank: 23.
+        """
+        for field in dataclasses.fields(self):
+            value = getattr(self, field.name)
+            if not isinstance(value, field.type):
+                setattr(self, field.name, field.type(value))
+
 
 SCHOOL_DATA_BY_ABBREV = {
     "aamu": {"conf": "swac", "name": "alabama a&m"},
@@ -395,9 +406,3 @@ SCHOOL_DATA_BY_NAME = {
 SCHOOL_ABBREVS = set(SCHOOL_DATA_BY_ABBREV.keys())
 SCHOOL_NAMES = {s["name"] for s in SCHOOL_DATA_BY_ABBREV.values()}
 CONF_NAMES = {s["conf"] for s in SCHOOL_DATA_BY_ABBREV.values()}
-
-
-def get_names_from_abbrevs(names):
-    """Given a list of school abbrevs, return a list of names."""
-    names = [n.lower() for n in names]
-    return [v["name"] for k, v in SCHOOL_DATA_BY_ABBREV.items() if k in names]
