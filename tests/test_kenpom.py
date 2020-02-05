@@ -230,21 +230,21 @@ def test_write_to_console_basic_conference():
     # include longest (NCST) and short team names (Duke), which
     # define width of output.
 
-    assert "           Duke     2   18-3" in out_text
-    assert "     Louisville     8   19-3" in out_text
-    assert "     Florida St    18   18-3" in out_text
-    assert "       Syracuse    53   13-9" in out_text
-    assert "       Virginia    54   14-6" in out_text
-    assert "     Notre Dame    57   13-8" in out_text
-    assert "       NC State    70   14-8" in out_text
-    assert "     Pittsburgh    79   13-8" in out_text
-    assert "  Virginia Tech    84   14-8" in out_text
-    assert "   Georgia Tech    91  10-12" in out_text
-    assert "        Clemson    95  11-10" in out_text
-    assert " North Carolina    97  10-11" in out_text
-    assert "    Wake Forest   104  10-11" in out_text
-    assert "       Miami FL   117   11-9" in out_text
-    assert " Boston College   162  11-11" in out_text
+    assert "           Duke     2   18-3  ACC" in out_text
+    assert "     Louisville     8   19-3  ACC" in out_text
+    assert "     Florida St    18   18-3  ACC" in out_text
+    assert "       Syracuse    53   13-9  ACC" in out_text
+    assert "       Virginia    54   14-6  ACC" in out_text
+    assert "     Notre Dame    57   13-8  ACC" in out_text
+    assert "       NC State    70   14-8  ACC" in out_text
+    assert "     Pittsburgh    79   13-8  ACC" in out_text
+    assert "  Virginia Tech    84   14-8  ACC" in out_text
+    assert "   Georgia Tech    91  10-12  ACC" in out_text
+    assert "        Clemson    95  11-10  ACC" in out_text
+    assert " North Carolina    97  10-11  ACC" in out_text
+    assert "    Wake Forest   104  10-11  ACC" in out_text
+    assert "       Miami FL   117   11-9  ACC" in out_text
+    assert " Boston College   162  11-11  ACC" in out_text
 
 
 def test_get_args_from_args():
