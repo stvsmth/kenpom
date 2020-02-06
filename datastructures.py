@@ -26,15 +26,15 @@ class KenPom:
     sos_def_rank: int
     sos_non_conf: float
     sos_non_conf_rank: int
-    # NOTE: abbrev is NOT in source KenPom data
-    # We append it so we can do searches based on score-ticker names (KU, VT, UVA, etc)
+    # NOTE: abbrev is NOT in source KenPom data.
+    # We append it so we can do searches based on score-ticker names (KU, VT, UVA, etc).
     abbrev: str
 
     def __post_init__(self):
         """Type incoming data.
 
-        We're scraping DOM elements `text` values, so everything comes in as
-        text, but we may want actual values (think ACC avg offence rank: 23.
+        We're scraping DOM element `text` values, so everything comes in as
+        text, but we want typed values (think ACC avg offence rank: 23).
         """
         for field in dataclasses.fields(self):
             value = getattr(self, field.name)

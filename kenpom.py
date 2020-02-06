@@ -79,37 +79,37 @@ def parse_data(html_content):
     as_of = as_of.split("\n")[0]
 
     soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
-    data = []
+    data = dict()
     for elements in soup:
-        # Rely on the fact that relevant rows have 22 cols and other tr elements don't
+        # Rely on the fact that relevant rows have distinct, known number of items
         if len(elements) != DATA_ROW_COL_COUNT:
             continue
-        # Note, we strip out any "blank" column as well (such as the first column)
-        text_elements = [e.text.strip() for e in elements if hasattr(e, "text")]
 
-        # Replace the trailing period in `St.` Why? we right-justify text and the
-        # justification looks  horrible if the last char is a period. Be sure to store
-        # the mutated school name, but also grab a copy for better code readability.
-        text_elements[1] = school_name = text_elements[1].replace(".", "")
+        # Grab just text vales from our html elements
+        text_items = [e.text.strip() for e in elements if hasattr(e, "text")]
 
+        # Replace the trailing period in `Boise St.` so justified text looks better
+        text_items[1] = school_name = text_items[1].replace(".", "")
+
+        # Get abbrev to use as data key, allow user to search on this
         school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
-        text_elements.append(school_abbrev.upper())
-        data.append({school_abbrev: KenPom(*text_elements)})
+        text_items.append(school_abbrev.upper())
 
-    keyed_data = dict((key, d[key]) for d in data for key in d)
-    return keyed_data, as_of
+        data[school_abbrev] = KenPom(*text_items)
+
+    return data, as_of
 
 
 def _get_filters(user_input):
     """Return filters based on user input.
 
     This is a brute force not-so-pretty way of handling top-N filters along with
-    name-based filters. There are probably all kinds of input that could cause
-    issues. But I'm the only user right now.
+    name-based filters.
     """
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
-    # of conference codes (acc,sec) or (possibly partial) school names (vil,kans)
+    # of strings representing names (conf, school, or abbrev). Normalize that data
+    # to lower case and handle some input requirements for spaces.
     try:
         top_filter = int(user_input)
         assert top_filter >= 0, "Top `n` must be zero or greater."
@@ -128,7 +128,7 @@ def _get_filters(user_input):
 
 
 def filter_data(data, user_input):
-    """Filter data before we display."""
+    """Filter data for display."""
     names, top_filter = _get_filters(user_input)
 
     if top_filter == 0:
@@ -154,6 +154,7 @@ def filter_data(data, user_input):
 
     meta_data = {
         "max_name_len": max_name_len,
+        "names": names,
         "num_teams": len(filtered_data),
         "top_filter": top_filter,
     }
