@@ -80,7 +80,6 @@ def parse_data(html_content):
 
     soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
     data = []
-    err = False
     for elements in soup:
         # Rely on the fact that relevant rows have 22 cols and other tr elements don't
         if len(elements) != DATA_ROW_COL_COUNT:
@@ -90,20 +89,12 @@ def parse_data(html_content):
 
         # Replace the trailing period in `St.` Why? we right-justify text and the
         # justification looks  horrible if the last char is a period. Be sure to store
-        # the mutated school name, but also grab a copy for better readability.
+        # the mutated school name, but also grab a copy for better code readability.
         text_elements[1] = school_name = text_elements[1].replace(".", "")
 
-        # Add school abbrev to our scraped data set; fail if we're missing data.
-        # Should be really rare after initial setup, maybe if schools move in/out of D1.
-        try:
-            school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
-            text_elements.append(school_abbrev.upper())
-            data.append({school_abbrev: KenPom(*text_elements)})
-        except IndexError:
-            print("ERR: no abbrev {}".format(school_name))
-            err = True
-    if err:
-        sys.exit(1)
+        school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
+        text_elements.append(school_abbrev.upper())
+        data.append({school_abbrev: KenPom(*text_elements)})
 
     keyed_data = dict((key, d[key]) for d in data for key in d)
     return keyed_data, as_of
