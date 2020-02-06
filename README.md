@@ -61,15 +61,14 @@ mode type `q`, `quit`, or `exit`.
 
     (kenpom) $ python kenpom.py
     Data through games of Saturday, February 1
-    Top `n`, 0 for all, school(s), or conference(s) [25]: 5
-
+    Top `n`, code(s), conference(s), or schools(s) [25]: 25
           Kansas     1   18-3  B12
             Duke     2   18-3  ACC
           Baylor     3   19-1  B12
     San Diego St     4   23-0  MWC
          Gonzaga     5   23-1  WCC
 
-    Top `n`, 0 for all, school(s), or conference(s) [25]: q
+    Top `n`, code(s), conference(s), or schools(s) [25]: q
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school code, 'cause typing is hard
