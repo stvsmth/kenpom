@@ -52,6 +52,8 @@ fewer schools than you were expecting, this is probably why.
 Without any command line options, we'll prompt you for one of three values: `n` for
 a top-`n` search, a conference code, or a school name. The default is a top-25 search.
 
+To get a complete list of all school rankings, enter `all` of `0`.
+
 #### Interactive mode
 
 All the following examples will work in interactive mode as well. To leave interactive

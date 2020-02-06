@@ -49,7 +49,7 @@ def get_args(args):
     else:
         interactive = True
         user_input = (
-            input("    Top `n`, 0 for all, school(s), or conference(s) [25]: ") or "25"
+            input("    Top `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
         )
 
     # Convert All input to our integer equivalent
