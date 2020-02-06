@@ -15,7 +15,7 @@ from datastructures import (
     KenPom,
     CONF_NAMES,
     SCHOOL_DATA_BY_NAME,
-    SCHOOL_DATA_BY_ABBREV,
+    SCHOOL_DATA_BY_ALIAS,
 )
 from urllib.parse import unquote_plus
 import requests
@@ -91,11 +91,11 @@ def parse_data(html_content):
         # Replace the trailing period in `Boise St.` so justified text looks better
         text_items[1] = school_name = text_items[1].replace(".", "")
 
-        # Get abbrev to use as data key, allow user to search on this
-        school_abbrev = SCHOOL_DATA_BY_NAME[school_name.lower()]["abbrev"]
-        text_items.append(school_abbrev.upper())
+        # Get alias to use as data key, allow user to search on this
+        school_alias = SCHOOL_DATA_BY_NAME[school_name.lower()]["alias"]
+        text_items.append(school_alias.upper())
 
-        data[school_abbrev] = KenPom(*text_items)
+        data[school_alias] = KenPom(*text_items)
 
     return data, as_of
 
@@ -108,7 +108,7 @@ def _get_filters(user_input):
     """
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
-    # of strings representing names (conf, school, or abbrev). Normalize that data
+    # of strings representing names (conf, school, or alias). Normalize that data
     # to lower case and handle some input requirements for spaces.
     try:
         top_filter = int(user_input)
@@ -137,8 +137,8 @@ def filter_data(data, user_input):
     elif top_filter > 0:
         filtered_data = {k: v for k, v in data.items() if v.rank <= top_filter}
 
-    elif abbrevs := SCHOOL_DATA_BY_ABBREV.keys() & set(names):
-        filtered_data = {k: v for k, v in data.items() if k in abbrevs}
+    elif aliases := SCHOOL_DATA_BY_ALIAS.keys() & set(names):
+        filtered_data = {k: v for k, v in data.items() if k in aliases}
 
     elif conf_names := CONF_NAMES.intersection(set(names)):
         filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}

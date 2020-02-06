@@ -77,7 +77,7 @@ def test_parse_data():
     assert 5.90 == num_41.sos_non_conf
     assert 35 == num_41.sos_non_conf_rank
     # Not in KenPom, we added when we parsed
-    assert "FLA" == num_41.abbrev
+    assert "FLA" == num_41.alias
 
 
 def test_filter_data_conf_capitalization():
@@ -111,7 +111,7 @@ def test_filter_handles_top_n():
     assert len(data) == 111
 
 
-def test_filter_data_ensure_abbrev_superiority():
+def test_filter_data_ensure_alias_superiority():
     all_data, as_of = PARSED_CONTENT
 
     data, _ = filter_data(all_data, "utah")
@@ -152,13 +152,13 @@ def test_filter_data_school_by_name():
     assert data["vt"].name == "Virginia Tech"
 
 
-def test_filter_data_abbrev_vs_name():
+def test_filter_data_alias_vs_name():
     all_data, as_of = PARSED_CONTENT
     data, _ = filter_data(all_data, "mich,msu")
     assert len(data) == 2
 
 
-def test_filter_data_school_abbrevs():
+def test_filter_data_school_aliases():
     all_data, as_of = PARSED_CONTENT
     data, _ = filter_data(all_data, "vt,wof")
     data = list(data.values())

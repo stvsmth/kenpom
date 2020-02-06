@@ -26,9 +26,9 @@ class KenPom:
     sos_def_rank: int
     sos_non_conf: float
     sos_non_conf_rank: int
-    # NOTE: abbrev is NOT in source KenPom data.
+    # NOTE: alias is NOT in source KenPom data.
     # We append it so we can do searches based on score-ticker names (KU, VT, UVA, etc).
-    abbrev: str
+    alias: str
 
     def __post_init__(self):
         """Type incoming data.
@@ -42,7 +42,7 @@ class KenPom:
                 setattr(self, field.name, field.type(value))
 
 
-SCHOOL_DATA_BY_ABBREV = {
+SCHOOL_DATA_BY_ALIAS = {
     "aamu": {"conf": "swac", "name": "alabama a&m"},
     "acu": {"conf": "slnd", "name": "abilene christian"},
     "afa": {"conf": "mwc", "name": "air force"},
@@ -399,10 +399,9 @@ SCHOOL_DATA_BY_ABBREV = {
 }
 
 SCHOOL_DATA_BY_NAME = {
-    s["name"]: {"conf": s["conf"], "abbrev": k}
-    for k, s in SCHOOL_DATA_BY_ABBREV.items()
+    s["name"]: {"conf": s["conf"], "alias": k} for k, s in SCHOOL_DATA_BY_ALIAS.items()
 }
 
-SCHOOL_ABBREVS = set(SCHOOL_DATA_BY_ABBREV.keys())
-SCHOOL_NAMES = {s["name"] for s in SCHOOL_DATA_BY_ABBREV.values()}
-CONF_NAMES = {s["conf"] for s in SCHOOL_DATA_BY_ABBREV.values()}
+SCHOOL_ALIASES = set(SCHOOL_DATA_BY_ALIAS.keys())
+SCHOOL_NAMES = {s["name"] for s in SCHOOL_DATA_BY_ALIAS.values()}
+CONF_NAMES = {s["conf"] for s in SCHOOL_DATA_BY_ALIAS.values()}

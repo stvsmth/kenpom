@@ -70,7 +70,7 @@ mode type `q`, `quit`, or `exit`.
     Top `n`, 0 for all, school(s), or conference(s) [25]: q
 
 [//]: # (Edit doc-gen.txt rather than the following content)
-#### Search by school abbreviation, 'cause typing is hard
+#### Search by school code, 'cause typing is hard
     (kenpom) $ python kenpom.py umbc
     Data through games of Monday, February 3
 

@@ -1,4 +1,4 @@
-umbc_#### Search by school abbreviation, 'cause typing is hard
+umbc_#### Search by school code, 'cause typing is hard
 sfbk,sfpa_#### Probably the most useful mode ... compare two teams that are playing
 7_#### Get the top `n` teams
 Valley_#### Find all teams with `Valley` in the title ...
