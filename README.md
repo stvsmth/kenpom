@@ -33,8 +33,8 @@ pytest tests
 
 You can pass filtering options in via command-line arguments or as prompted. We'll
 filter on conference(s), school names(s), or the top `n` schools. With no input we
-simply print the top 25 teams. Conference names must match exactly and school names
-will match on any string. See the examples below for the finer points.
+simply print the top 25 teams. School codes and conference names must match exactly.
+School names will match on any string. See the examples below for the finer points.
 
 ### Search order precedence
 If any school code (KU, UK, OKLA, etc) is present, then the entire search will
@@ -48,11 +48,6 @@ You will probably forget this and never even care. But if your search returns mo
 fewer schools than you were expecting, this is probably why.
 
 ### Examples
-
-Without any command line options, we'll prompt you for one of three values: `n` for
-a top-`n` search, a conference code, or a school name. The default is a top-25 search.
-
-To get a complete list of all school rankings, enter `all` of `0`.
 
 #### Interactive mode
 
