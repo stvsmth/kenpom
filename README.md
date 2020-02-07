@@ -9,7 +9,7 @@ not really useful unless you like tinkering with Python.
 
 Why scrape? Well, if your team rarely haunts the top 25 and/or your curious how your
 team ranks against other non-ranked teams, KenPom is one way to compare relative
-strengths. This is probably only useful to folks who like tinkering in Python.
+strengths.
 
 This requires Python 3.8 or greater.
 
