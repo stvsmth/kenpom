@@ -73,14 +73,14 @@ def get_args(args: List[str]) -> Tuple[str, bool]:
     return user_input, interactive
 
 
-def fetch_content(url: str) -> bytes:
+def fetch_content(url: str) -> str:
     """Fetch the HTML content from the URL."""
     response = requests.get(url)
     response.raise_for_status()
-    return response.content
+    return response.content.decode("utf-8")
 
 
-def parse_data(html_content: bytes) -> Tuple[KenPomDict, str]:
+def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
     """Parse raw HTML into a more useful data structure.
 
     Note: The parse data currently returns all strings. For now we're just ingesting

@@ -32,8 +32,6 @@ def _fetch_test_content():
         return data
 
 
-# FIXME: Fixture Me!!!
-# Parsing content is REALLY expensive (much more so than reading content)
 PARSED_CONTENT = parse_data(_fetch_test_content())
 
 
