@@ -10,6 +10,7 @@ TODO:
   only show rank, W/L, and conference.
 """
 from bs4 import BeautifulSoup, SoupStrainer
+from cachetools import cached, TTLCache
 from datastructures import (
     KenPom,
     KenPomDict,
@@ -31,16 +32,28 @@ SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width of terminal 
 
 def main():
     """Get args, fetch data, filter data, display data."""
-    page_content = fetch_content(URL)
-    raw_data, as_of = parse_data(page_content)
     interactive = True
-    print("   ", as_of)
     while interactive:
+        as_of, raw_data = fetch_and_parse_data()
         user_input, interactive = get_args(sys.argv)
         if user_input.lower() in ("q", "quit", "exit"):
             break
         data, meta_data = filter_data(raw_data, user_input)
-        write_to_console(data, meta_data)
+        write_to_console(data, meta_data, as_of)
+
+
+@cached(cache=TTLCache(maxsize=20000, ttl=600))
+def fetch_and_parse_data():
+    """Convenience method that allows us to cache results.
+
+    Caching the results allow us to let a long-running process (such as PyTo on
+    the phone) get relatively up-to-date results. Note that as of 2020-02-07 the
+    total size of raw data was 18500 bytes, so we may need to double-check this
+    after each season to ensure Kenpom hasn't dumped more data.
+    """
+    page_content = fetch_content(URL)
+    raw_data, as_of = parse_data(page_content)
+    return as_of, raw_data
 
 
 def get_args(args: List[str]) -> Tuple[str, bool]:
@@ -51,7 +64,7 @@ def get_args(args: List[str]) -> Tuple[str, bool]:
     else:
         interactive = True
         user_input = (
-            input("    Top `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
+            input("\nTop `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
         )
 
     # Convert All input to our integer equivalent
@@ -76,9 +89,10 @@ def parse_data(html_content: bytes) -> Tuple[KenPomDict, str]:
     margin data is float, etc.
     """
     as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
-    as_of = as_of_html[0].text if as_of_html else ""
-    # Remove the total # of games indicator.
-    as_of = as_of.split("\n")[0]
+    as_of = as_of_html[0].text.strip() if as_of_html else ""
+
+    # Join the total # of games line onto the date line.
+    as_of = as_of.replace("\n", " ")
 
     soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
     data = dict()
@@ -163,12 +177,14 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
     return filtered_data, meta_data
 
 
-def write_to_console(data: KenPomDict, meta: MetaData) -> Tuple[KenPomDict, MetaData]:
+def write_to_console(
+    data: KenPomDict, meta: MetaData, as_of: str
+) -> Tuple[KenPomDict, MetaData]:
     """Dump the data to standard out."""
     print()  # provide white-space around output
     for team in list(data.values()):
         print(
-            "   {team:>{len}} {rank:>5} {record:>6}  {conf}".format(
+            "{team:>{len}} {rank:>5} {record:>6}  {conf}".format(
                 len=meta["max_name_len"],
                 team=team.name,
                 rank=team.rank,
@@ -176,7 +192,7 @@ def write_to_console(data: KenPomDict, meta: MetaData) -> Tuple[KenPomDict, Meta
                 conf=team.conf,
             )
         )
-    print()  # provide white-space around output
+    print("\n", as_of, "\n")
     return data, meta
 
 

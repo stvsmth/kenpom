@@ -1,6 +1,7 @@
-requests>=2.21.0
 beautifulsoup4>=4.7.0
+cachetools
 lxml
+requests>=2.21.0
 
 # dev
 pre-commit
