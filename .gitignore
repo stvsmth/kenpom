@@ -18,8 +18,12 @@ RELEASE-VERSION
 # test, docs, coverage
 .pytest_cache
 .coverage
+.mypy_cache/
 
 # venv stuff
 bin/
 lib/
 pyvenv.cfg
+
+# Personal tools not sure if I want to include
+tools/build_one_file.sh

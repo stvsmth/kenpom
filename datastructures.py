@@ -1,4 +1,5 @@
 import dataclasses
+from typing import Dict, Any
 
 
 @dataclasses.dataclass
@@ -34,13 +35,16 @@ class KenPom:
         """Type incoming data.
 
         We're scraping DOM element `text` values, so everything comes in as
-        text, but we want typed values (think ACC avg offence rank: 23).
+        text, but we want typed values (think ACC avg offense rank: 23).
         """
         for field in dataclasses.fields(self):
             value = getattr(self, field.name)
             if not isinstance(value, field.type):
                 setattr(self, field.name, field.type(value))
 
+
+KenPomDict = Dict[str, KenPom]
+MetaData = Dict[str, Any]
 
 SCHOOL_DATA_BY_ALIAS = {
     "aamu": {"conf": "swac", "name": "alabama a&m"},

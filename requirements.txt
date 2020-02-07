@@ -6,3 +6,4 @@ lxml
 pre-commit
 pytest
 pytest-cov
+mypy

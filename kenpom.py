@@ -5,18 +5,20 @@
 TODO:
 * Clean up arg handling, but retain option for user_input on no args
   (essential for easy use in primary use case: iPhone/PyTo).
-* Use conf list for input validation? 2) Generate list via an arg (--list)
+* Use conf list for input validation? Maybe generate list via an arg (--list).
 * Provide configuration object to drive display of columns. We currently
   only show rank, W/L, and conference.
 """
-
 from bs4 import BeautifulSoup, SoupStrainer
 from datastructures import (
     KenPom,
+    KenPomDict,
+    MetaData,
     CONF_NAMES,
     SCHOOL_DATA_BY_NAME,
     SCHOOL_DATA_BY_ALIAS,
 )
+from typing import List, Tuple, Dict, Any
 from urllib.parse import unquote_plus
 import requests
 import sys
@@ -24,7 +26,7 @@ import sys
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
-SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width or terminal output
+SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width of terminal output
 
 
 def main():
@@ -41,7 +43,7 @@ def main():
         write_to_console(data, meta_data)
 
 
-def get_args(args):
+def get_args(args: List[str]) -> Tuple[str, bool]:
     """Pull args from command-line, or prompt user if no args."""
     if len(args) == 2:
         interactive = False
@@ -58,14 +60,14 @@ def get_args(args):
     return user_input, interactive
 
 
-def fetch_content(url):
+def fetch_content(url: str) -> bytes:
     """Fetch the HTML content from the URL."""
     response = requests.get(url)
     response.raise_for_status()
     return response.content
 
 
-def parse_data(html_content):
+def parse_data(html_content: bytes) -> Tuple[KenPomDict, str]:
     """Parse raw HTML into a more useful data structure.
 
     Note: The parse data currently returns all strings. For now we're just ingesting
@@ -100,7 +102,7 @@ def parse_data(html_content):
     return data, as_of
 
 
-def _get_filters(user_input):
+def _get_filters(user_input: str) -> Tuple[List[str], int]:
     """Return filters based on user input.
 
     This is a brute force not-so-pretty way of handling top-N filters along with
@@ -116,18 +118,18 @@ def _get_filters(user_input):
         return [], top_filter
     except ValueError:
         # Normalize the user input from command-line (or `input`)
-        user_input = [c.lower() for c in user_input.split(",")]
+        input_as_list = [c.lower() for c in user_input.split(",")]
 
         # Remove any quotes used in school name input
-        user_input = [u.replace('"', "").replace("'", "") for u in user_input]
+        input_as_list = [u.replace('"', "").replace("'", "") for u in input_as_list]
 
         # Decode any encoded input (mostly + for space) because sometimes we start
         # typing and don't want to go back and surround input with quotes
-        user_input = [unquote_plus(i) for i in user_input]
-        return user_input, -1
+        input_as_list = [unquote_plus(i) for i in input_as_list]
+        return input_as_list, -1
 
 
-def filter_data(data, user_input):
+def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData]:
     """Filter data for display."""
     names, top_filter = _get_filters(user_input)
 
@@ -161,13 +163,13 @@ def filter_data(data, user_input):
     return filtered_data, meta_data
 
 
-def write_to_console(data, meta_data):
+def write_to_console(data: KenPomDict, meta: MetaData) -> Tuple[KenPomDict, MetaData]:
     """Dump the data to standard out."""
     print()  # provide white-space around output
     for team in list(data.values()):
         print(
             "   {team:>{len}} {rank:>5} {record:>6}  {conf}".format(
-                len=meta_data["max_name_len"],
+                len=meta["max_name_len"],
                 team=team.name,
                 rank=team.rank,
                 record=team.record,
@@ -175,7 +177,7 @@ def write_to_console(data, meta_data):
             )
         )
     print()  # provide white-space around output
-    return data, meta_data
+    return data, meta
 
 
 if __name__ == "__main__":
