@@ -166,7 +166,9 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
 
     # Keep track of the longest school name. We'll need this to handle
     # right-justified formatting in our console output.
-    max_name_len = max({len(v.name) for v in filtered_data.values()})
+    max_name_len = (
+        max({len(v.name) for v in filtered_data.values()}) if filtered_data else 0
+    )
 
     meta_data = {
         "max_name_len": max_name_len,

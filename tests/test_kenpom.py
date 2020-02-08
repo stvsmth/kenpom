@@ -121,6 +121,13 @@ def test_filter_data_ensure_alias_superiority():
     assert len(data) == 1
 
 
+def test_bogus_input():
+    all_data, as_of = PARSED_CONTENT
+
+    data, _ = filter_data(all_data, "foobar")
+    assert len(data) == 0
+
+
 def test_filter_data_school_by_name():
     all_data, as_of = PARSED_CONTENT
     data, _ = filter_data(all_data, "valley")
