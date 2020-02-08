@@ -51,31 +51,35 @@ fewer schools than you were expecting, this is probably why.
 
 #### Interactive mode
 
-All the following examples will work in interactive mode as well. To leave interactive
-mode type `q`, `quit`, or `exit`.
+All the following examples will work in interactive mode as well.
+
+To leave interactive mode type `q`, `quit`, or `exit`. For clarity we'll remove the
+`Data through` footer for the remaining examples.
 
     (kenpom) $ python kenpom.py
-    Data through games of Saturday, February 1
     Top `n`, code(s), conference(s), or schools(s) [25]: 25
+
           Kansas     1   18-3  B12
             Duke     2   18-3  ACC
           Baylor     3   19-1  B12
     San Diego St     4   23-0  MWC
          Gonzaga     5   23-1  WCC
 
+    Data through games of Saturday, February 1
+
+
     Top `n`, code(s), conference(s), or schools(s) [25]: q
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school code, 'cause typing is hard
+
     (kenpom) $ python kenpom.py umbc
-    Data through games of Monday, February 3
 
     UMBC   304   9-14  AE
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Probably the most useful mode ... compare two teams that are playing
     (kenpom) $ python kenpom.py sfbk,sfpa
-    Data through games of Monday, February 3
 
     St Francis PA   203   14-8  NEC
     St Francis NY   301  10-12  NEC
@@ -83,7 +87,6 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Get the top `n` teams
     (kenpom) $ python kenpom.py 7
-    Data through games of Monday, February 3
 
            Kansas     1   19-3  B12
              Duke     2   18-3  ACC
@@ -96,7 +99,6 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Find all teams with `Valley` in the title ...
     (kenpom) $ python kenpom.py Valley
-    Data through games of Monday, February 3
 
               Utah Valley   261   9-14  WAC
      UT Rio Grande Valley   262   7-14  WAC
@@ -105,7 +107,6 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... include `southern` matches too
     (kenpom) $ python kenpom.py valley,SOUTHERN
-    Data through games of Monday, February 3
 
             Southern Utah   137   13-8  BSky
         Southern Illinois   147  13-10  MVC
@@ -121,14 +122,12 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Partial names matches, 'cause typing is hard ...
     (kenpom) $ python kenpom.py colo
-    Data through games of Monday, February 3
 
     Colorado    17   17-5  P12
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... Whoops, colo is a school code, so expand the search term.
     (kenpom) $ python kenpom.py color
-    Data through games of Monday, February 3
 
              Colorado    17   17-5  P12
           Colorado St    87   16-8  MWC
@@ -137,14 +136,12 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Use quotes to find a name with spaces
     (kenpom) $ python kenpom.py "virginia tech"
-    Data through games of Monday, February 3
 
     Virginia Tech    85   14-8  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### .. or single quotes ...
     (kenpom) $ python kenpom.py 'NORTH DAKOTA'
-    Data through games of Monday, February 3
 
     North Dakota St   127   16-7  Sum
        North Dakota   227  10-13  Sum
@@ -152,14 +149,12 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or plus sign if you forget to start with a quote
     (kenpom) $ python kenpom.py Virginia+Tech
-    Data through games of Monday, February 3
 
     Virginia Tech    85   14-8  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by a conference
     (kenpom) $ python kenpom.py meac
-    Data through games of Monday, February 3
 
                 Norfolk St   245  10-13  MEAC
     North Carolina Central   257  10-12  MEAC
@@ -176,7 +171,6 @@ mode type `q`, `quit`, or `exit`.
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or several conferences
     (kenpom) $ python kenpom.py b12,ACC,B10
-    Data through games of Monday, February 3
 
             Kansas     1   19-3  B12
               Duke     2   18-3  ACC
