@@ -189,8 +189,8 @@ def test_write_to_console_all():
     with captured_output() as (out, err):
         write_to_console(data, meta_data, as_of)
         out_text = out.getvalue()
-
-    assert "Chicago St   353   4-19  WAC" in out_text
+    as_lines = out_text.split("\n")
+    assert "            Chicago St   CHIC   353   4-19  WAC" == as_lines[353]
 
 
 def test_write_to_console_top_5():
@@ -209,7 +209,8 @@ def test_write_to_console_top_5():
         out_text = out.getvalue()
 
     # check the formatting of at least one line
-    assert "San Diego St     4   23-0  MWC" in out_text
+    as_lines = out_text.split("\n")
+    assert "San Diego St   SDSU     4   23-0  MWC" == as_lines[4]
 
 
 def test_write_to_console_multi_conference():
@@ -227,7 +228,8 @@ def test_write_to_console_multi_conference():
         out_text = out.getvalue()
 
     # Make sure the formatting for at least one line is as expected.
-    assert "Duke     2   18-3  ACC" in out_text
+    as_lines = out_text.split("\n")
+    assert "          Duke   DUKE     2   18-3  ACC" == as_lines[1]
 
 
 def test_write_to_console_basic_conference():
@@ -238,30 +240,30 @@ def test_write_to_console_basic_conference():
         write_to_console(data, meta_data, as_of)
         out_text = out.getvalue()
 
-    lines = out_text.split("\n")
+    as_lines = out_text.split("\n")
 
     # Check formatting, values, be sure to test team > #20
     # so we know that we're bypassing the intermittent headers
     # include long (NC) and short team names (Duke), which
     # define width of output.
-    assert "          Duke     2   18-3  ACC" == lines[1]
-    assert "    Louisville     8   19-3  ACC" == lines[2]
-    assert "    Florida St    18   18-3  ACC" == lines[3]
-    assert "      Syracuse    53   13-9  ACC" == lines[4]
-    assert "      Virginia    54   14-6  ACC" == lines[5]
-    assert "    Notre Dame    57   13-8  ACC" == lines[6]
-    assert "      NC State    70   14-8  ACC" == lines[7]
-    assert "    Pittsburgh    79   13-8  ACC" == lines[8]
-    assert " Virginia Tech    84   14-8  ACC" == lines[9]
-    assert "  Georgia Tech    91  10-12  ACC" == lines[10]
-    assert "       Clemson    95  11-10  ACC" == lines[11]
-    assert "North Carolina    97  10-11  ACC" == lines[12]
-    assert "   Wake Forest   104  10-11  ACC" == lines[13]
-    assert "      Miami FL   117   11-9  ACC" == lines[14]
-    assert "Boston College   162  11-11  ACC" == lines[15]
+    assert "          Duke   DUKE     2   18-3  ACC" == as_lines[1]
+    assert "    Louisville    LOU     8   19-3  ACC" == as_lines[2]
+    assert "    Florida St    FSU    18   18-3  ACC" == as_lines[3]
+    assert "      Syracuse    SYR    53   13-9  ACC" == as_lines[4]
+    assert "      Virginia    UVA    54   14-6  ACC" == as_lines[5]
+    assert "    Notre Dame     ND    57   13-8  ACC" == as_lines[6]
+    assert "      NC State   NCST    70   14-8  ACC" == as_lines[7]
+    assert "    Pittsburgh   PITT    79   13-8  ACC" == as_lines[8]
+    assert " Virginia Tech     VT    84   14-8  ACC" == as_lines[9]
+    assert "  Georgia Tech     GT    91  10-12  ACC" == as_lines[10]
+    assert "       Clemson   CLEM    95  11-10  ACC" == as_lines[11]
+    assert "North Carolina    UNC    97  10-11  ACC" == as_lines[12]
+    assert "   Wake Forest   WAKE   104  10-11  ACC" == as_lines[13]
+    assert "      Miami FL    MIA   117   11-9  ACC" == as_lines[14]
+    assert "Boston College     BC   162  11-11  ACC" == as_lines[15]
 
-    assert NUM_ACC_TEAMS == len(lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
-    assert " Data through games of Saturday, February 1  (4083 games) " == lines[17]
+    assert NUM_ACC_TEAMS == len(as_lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
+    assert " Data through games of Saturday, February 1  (4083 games) " == as_lines[17]
 
 
 def test_get_args_from_args():

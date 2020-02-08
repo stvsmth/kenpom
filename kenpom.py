@@ -184,8 +184,9 @@ def write_to_console(
     print()  # provide white-space around output
     for team in list(data.values()):
         print(
-            "{team:>{len}} {rank:>5} {record:>6}  {conf}".format(
+            "{team:>{len}}  {alias:>5} {rank:>5} {record:>6}  {conf}".format(
                 len=meta["max_name_len"],
+                alias=team.alias,
                 team=team.name,
                 rank=team.rank,
                 record=team.record,
