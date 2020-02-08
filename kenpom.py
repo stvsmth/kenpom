@@ -19,7 +19,7 @@ from datastructures import (
     SCHOOL_DATA_BY_NAME,
     SCHOOL_DATA_BY_ALIAS,
 )
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple
 from urllib.parse import unquote_plus
 import requests
 import sys
