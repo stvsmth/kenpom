@@ -57,127 +57,125 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity we'll remove 
 `Data through` footer for the remaining examples.
 
     (kenpom) $ python kenpom.py
-    Top `n`, code(s), conference(s), or schools(s) [25]: 25
+    Top `n`, code(s), conference(s), or schools(s) [25]: 5
 
-          Kansas     1   18-3  B12
-            Duke     2   18-3  ACC
-          Baylor     3   19-1  B12
-    San Diego St     4   23-0  MWC
-         Gonzaga     5   23-1  WCC
+          Kansas     KU     1   23-3  B12
+          Baylor    BAY     2   24-1  B12
+         Gonzaga   GONZ     3   26-1  WCC
+    San Diego St   SDSU     4   26-0  MWC
+            Duke   DUKE     5   22-4  ACC
 
-    Data through games of Saturday, February 1
+     Data includes 10 of 55 games played on Thursday, February 20
 
 
-    Top `n`, code(s), conference(s), or schools(s) [25]: q
+    Top `n`, code(s), conference(s), or schools(s) [25]: quit
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school code, 'cause typing is hard
-
     (kenpom) $ python kenpom.py umbc
 
-    UMBC   304   9-14  AE
+    UMBC   UMBC   275  12-14  AE
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Probably the most useful mode ... compare two teams that are playing
     (kenpom) $ python kenpom.py sfbk,sfpa
 
-    St Francis PA   203   14-8  NEC
-    St Francis NY   301  10-12  NEC
+    St Francis PA   SFPA   178   18-8  NEC
+    St Francis NY   SFBK   303  12-14  NEC
+
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Get the top `n` teams
     (kenpom) $ python kenpom.py 7
 
-           Kansas     1   19-3  B12
-             Duke     2   18-3  ACC
-           Baylor     3   20-1  B12
-     San Diego St     4   23-0  MWC
-          Gonzaga     5   23-1  WCC
-           Dayton     6   20-2  A10
-    West Virginia     7   17-4  B12
+           Kansas     KU     1   23-3  B12
+           Baylor    BAY     2   24-1  B12
+          Gonzaga   GONZ     3   26-1  WCC
+     San Diego St   SDSU     4   26-0  MWC
+             Duke   DUKE     5   22-4  ACC
+           Dayton    DAY     6   24-2  A10
+    West Virginia    WVU     7   19-7  B12
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Find all teams with `Valley` in the title ...
     (kenpom) $ python kenpom.py Valley
 
-              Utah Valley   261   9-14  WAC
-     UT Rio Grande Valley   262   7-14  WAC
-    Mississippi Valley St   352   2-20  SWAC
+     UT Rio Grande Valley    RIO   237  12-14  WAC
+              Utah Valley    UVU   263   9-17  WAC
+    Mississippi Valley St   MVSU   352   3-23  SWAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... include `southern` matches too
     (kenpom) $ python kenpom.py valley,SOUTHERN
 
-            Southern Utah   137   13-8  BSky
-        Southern Illinois   147  13-10  MVC
-         Georgia Southern   153  13-10  SB
-           Texas Southern   251  10-12  SWAC
-            Southern Miss   255   7-16  CUSA
-              Utah Valley   261   9-14  WAC
-     UT Rio Grande Valley   262   7-14  WAC
-      Charleston Southern   294  11-11  BSth
-                 Southern   300   9-13  SWAC
-    Mississippi Valley St   352   2-20  SWAC
+            Southern Utah    SUU   151  14-11  BSky
+         Georgia Southern   GASO   153  16-11  SB
+        Southern Illinois    SIU   166  15-12  MVC
+     UT Rio Grande Valley    RIO   237  12-14  WAC
+            Southern Miss    USM   241   9-18  CUSA
+           Texas Southern   TXSO   252  12-13  SWAC
+              Utah Valley    UVU   263   9-17  WAC
+                 Southern    SOU   307  11-15  SWAC
+      Charleston Southern   CHSO   309  13-14  BSth
+    Mississippi Valley St   MVSU   352   3-23  SWAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Partial names matches, 'cause typing is hard ...
     (kenpom) $ python kenpom.py colo
 
-    Colorado    17   17-5  P12
+    Colorado   COLO    17   20-6  P12
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... Whoops, colo is a school code, so expand the search term.
     (kenpom) $ python kenpom.py color
 
-             Colorado    17   17-5  P12
-          Colorado St    87   16-8  MWC
-    Northern Colorado    91   14-7  BSky
+             Colorado   COLO    17   20-6  P12
+    Northern Colorado   UNCO    82   17-8  BSky
+          Colorado St    CSU    94  18-10  MWC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Use quotes to find a name with spaces
     (kenpom) $ python kenpom.py "virginia tech"
 
-    Virginia Tech    85   14-8  ACC
+    Virginia Tech     VT    95  15-11  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### .. or single quotes ...
     (kenpom) $ python kenpom.py 'NORTH DAKOTA'
 
-    North Dakota St   127   16-7  Sum
-       North Dakota   227  10-13  Sum
+    North Dakota St   NDSU   122   20-7  Sum
+       North Dakota    UND   234  12-15  Sum
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or plus sign if you forget to start with a quote
     (kenpom) $ python kenpom.py Virginia+Tech
 
-    Virginia Tech    85   14-8  ACC
+    Virginia Tech     VT    95  15-11  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by a conference
     (kenpom) $ python kenpom.py meac
 
-                Norfolk St   245  10-13  MEAC
-    North Carolina Central   257  10-12  MEAC
-        North Carolina A&T   278  12-12  MEAC
-           Bethune Cookman   279  10-12  MEAC
-               Florida A&M   302   7-13  MEAC
-                 Morgan St   316  12-12  MEAC
-                 Coppin St   327   7-17  MEAC
-         South Carolina St   333   9-12  MEAC
-               Delaware St   346   3-18  MEAC
-                    Howard   349   2-22  MEAC
-    Maryland Eastern Shore   350   3-19  MEAC
+                Norfolk St   NORF   240  13-13  MEAC
+    North Carolina Central   NCCU   276  12-13  MEAC
+        North Carolina A&T   NCAT   280  13-14  MEAC
+           Bethune Cookman   COOK   294  13-13  MEAC
+                 Morgan St   MORG   311  14-14  MEAC
+               Florida A&M   FAMU   314  10-14  MEAC
+                 Coppin St   COPP   330   8-20  MEAC
+         South Carolina St   SCST   334  11-13  MEAC
+    Maryland Eastern Shore   UMES   346   5-21  MEAC
+               Delaware St    DSU   348   3-22  MEAC
+                    Howard    HOW   350   2-24  MEAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or several conferences
     (kenpom) $ python kenpom.py b12,ACC,B10
 
-            Kansas     1   19-3  B12
-              Duke     2   18-3  ACC
-            Baylor     3   20-1  B12
-     West Virginia     7   17-4  B12
-        Louisville     8   19-3  ACC
-       Michigan St     9   16-6  B10
-            [snip]   ...    ...  ...
-          Nebraska   136   7-15  B10
-    Boston College   162  11-11  ACC
+            Kansas     KU     1   23-3  B12
+            Baylor    BAY     2   24-1  B12
+              Duke   DUKE     5   22-4  ACC
+            [snip]    ...   ...    ...  ...
+      Northwestern     NW   124   6-19  B10
+          Nebraska    NEB   136   7-18  B10
+    Boston College     BC   161  13-14  ACC
