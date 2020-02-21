@@ -27,7 +27,6 @@ import sys
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
-SHORTEST_SCHOOL_NAME = 4  # Used as starting point to compute width of terminal output
 
 
 def main():
@@ -83,15 +82,13 @@ def fetch_content(url: str) -> str:
 def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
     """Parse raw HTML into a more useful data structure.
 
-    Note: The parse data currently returns all strings. For now we're just ingesting
-    the data and printing in different format(s). At some point in the future we may
-    type the data, such that the `rank` data item is an integer, the efficiency
-    margin data is float, etc.
+    We also append one data item: `alias`. This allows us to search by the oft-
+    used school alias (KU, UK, UMBC, aka score ticker symbol).
     """
     as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
     as_of = as_of_html[0].text.strip() if as_of_html else ""
 
-    # Join the total # of games line onto the date line.
+    # Join the total # of games and date info onto one line.
     as_of = as_of.replace("\n", " ")
 
     soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
@@ -104,7 +101,7 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         # Grab just text vales from our html elements
         text_items = [e.text.strip() for e in elements if hasattr(e, "text")]
 
-        # Replace the trailing period in `Boise St.` so justified text looks better
+        # Replace the trailing dot in `Boise St.` so right-justified text looks better
         text_items[1] = school_name = text_items[1].replace(".", "")
 
         # Get alias to use as data key, allow user to search on this
@@ -119,8 +116,8 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
 def _get_filters(user_input: str) -> Tuple[List[str], int]:
     """Return filters based on user input.
 
-    This is a brute force not-so-pretty way of handling top-N filters along with
-    name-based filters.
+    This is an ugly way of handling top-N filters vs. name-based filters. Will
+    eventually clean this up, but haven't needed to change it so far.
     """
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
@@ -144,7 +141,7 @@ def _get_filters(user_input: str) -> Tuple[List[str], int]:
 
 
 def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData]:
-    """Filter data for display."""
+    """Filter which schools we will display based on user input."""
     names, top_filter = _get_filters(user_input)
 
     if top_filter == 0:
@@ -165,7 +162,9 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
         }
 
     # Keep track of the longest school name. We'll need this to handle
-    # right-justified formatting in our console output.
+    # right-justified formatting in our console output. If there's no
+    # filtered_data then we have bogus input, so we need to guard against
+    # the evil `None` rearing its ugly head.
     max_name_len = (
         max({len(v.name) for v in filtered_data.values()}) if filtered_data else 0
     )
