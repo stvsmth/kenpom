@@ -32,7 +32,7 @@ pytest tests
 ## Usage
 
 You can pass filtering options in via command-line arguments or as prompted. We'll
-filter on conference(s), school names(s), or the top `n` schools. With no input we
+filter on conference(s), school name(s), or the top `n` schools. With no input we
 simply print the top 25 teams. School codes and conference names must match exactly.
 School names will match on any string. See the examples below for the finer points.
 
