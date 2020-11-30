@@ -25,7 +25,7 @@ import requests
 import sys
 
 URL = "https://kenpom.com/"
-NUM_SCHOOLS = 353  # Total number of NCAA D1 schools
+NUM_SCHOOLS = 357  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
 
 

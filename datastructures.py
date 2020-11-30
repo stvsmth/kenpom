@@ -46,6 +46,11 @@ class KenPom:
 KenPomDict = Dict[str, KenPom]
 MetaData = Dict[str, Any]
 
+# We are using the team alias (code) as defined in the ESPN tickers.
+# TODO: Write a auditor/scraper to find these, right now I have to manually update the
+#  3-6 changes we see each season as teams go up/down into D1 (money, sanctions, etc)
+# https://www.espn.com/mens-college-basketball/teams and then click on any oppenent of
+# missing team to see their alias.
 SCHOOL_DATA_BY_ALIAS = {
     "aamu": {"conf": "swac", "name": "alabama a&m"},
     "acu": {"conf": "slnd", "name": "abilene christian"},
@@ -69,6 +74,7 @@ SCHOOL_DATA_BY_ALIAS = {
     "bay": {"conf": "b12", "name": "baylor"},
     "bc": {"conf": "acc", "name": "boston college"},
     "bel": {"conf": "ovc", "name": "belmont"},
+    "bell": {"conf": "asun", "name": "bellarmine"},
     "bgsu": {"conf": "mac", "name": "bowling green"},
     "bing": {"conf": "ae", "name": "binghamton"},
     "brad": {"conf": "mvc", "name": "bradley"},
@@ -121,6 +127,7 @@ SCHOOL_DATA_BY_ALIAS = {
     "dsu": {"conf": "meac", "name": "delaware st"},
     "duke": {"conf": "acc", "name": "duke"},
     "duq": {"conf": "a10", "name": "duquesne"},
+    "dxst": {"conf": "wac", "name": "dixie st"},
     "ecu": {"conf": "amer", "name": "east carolina"},
     "eiu": {"conf": "ovc", "name": "eastern illinois"},
     "eky": {"conf": "ovc", "name": "eastern kentucky"},
@@ -312,6 +319,7 @@ SCHOOL_DATA_BY_ALIAS = {
     "suu": {"conf": "bsky", "name": "southern utah"},
     "syr": {"conf": "acc", "name": "syracuse"},
     "tamu": {"conf": "sec", "name": "texas a&m"},
+    "tar": {"conf": "wac", "name": "tarleton st"},
     "tcu": {"conf": "b12", "name": "tcu"},
     "tem": {"conf": "amer", "name": "temple"},
     "tenn": {"conf": "sec", "name": "tennessee"},
@@ -335,6 +343,7 @@ SCHOOL_DATA_BY_ALIAS = {
     "ucla": {"conf": "p12", "name": "ucla"},
     "ucr": {"conf": "bw", "name": "uc riverside"},
     "ucsb": {"conf": "bw", "name": "uc santa barbara"},
+    "ucsd": {"conf": "bw", "name": "uc san diego"},
     "uga": {"conf": "sec", "name": "georgia"},
     "uic": {"conf": "horz", "name": "illinois chicago"},
     "uk": {"conf": "sec", "name": "kentucky"},
