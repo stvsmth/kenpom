@@ -66,7 +66,7 @@ def get_args(args: List[str]) -> Tuple[str, bool]:
             input("\nTop `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
         )
 
-    # Convert All input to our integer equivalent
+    # Convert All input to our numerical/str equivalent
     if user_input.lower() == "all":
         user_input = "0"
     return user_input, interactive
@@ -156,7 +156,7 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
     elif conf_names := CONF_NAMES.intersection(set(names)):
         filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}
 
-    else:
+    else:  # full school name
         filtered_data = {
             k: v for k, v in data.items() for n in names if n in v.name.lower()
         }
