@@ -49,7 +49,7 @@ MetaData = Dict[str, Any]
 # We are using the team alias (code) as defined in the ESPN tickers.
 # TODO: Write a auditor/scraper to find these, right now I have to manually update the
 #  3-6 changes we see each season as teams go up/down into D1 (money, sanctions, etc)
-# https://www.espn.com/mens-college-basketball/teams and then click on any oppenent of
+# https://www.espn.com/mens-college-basketball/teams and then click on any opponent of
 # missing team to see their alias.
 SCHOOL_DATA_BY_ALIAS = {
     "aamu": {"conf": "swac", "name": "alabama a&m"},
