@@ -57,7 +57,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 `Data through` footer for the remaining examples.
 
     (kenpom) $ python kenpom.py
-    Top `n`, code(s), conference(s), or schools(s) [25]: 5
+    Top `n`, code(s), conference(s), or school(s) [25]: 5
         Team   Code  Rank  Off / Def    Rec  Conf
     ---------------------------------------------
      Gonzaga   GONZ     1    1 /  11   17-0   WCC
@@ -68,7 +68,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 
      Data through games of Saturday, January 30  (2603 games)
 
-    Top `n`, code(s), conference(s), or schools(s) [25]: quit
+    Top `n`, code(s), conference(s), or school(s) [25]: quit
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school code, 'cause typing is hard

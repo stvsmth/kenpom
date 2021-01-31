@@ -58,9 +58,7 @@ def get_input() -> str:
 
     Keep the user input as a string, we'll type it later.
     """
-    user_input = (
-        input("\nTop `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
-    )
+    user_input = input("\nTop `n`, code(s), conference(s), or school(s) [25]: ") or "25"
 
     # Convert All input to our numerical/str equivalent
     user_input = user_input.lower()
