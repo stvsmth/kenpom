@@ -31,14 +31,12 @@ DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we wan
 
 def main():
     """Get args, fetch data, filter data, display data."""
-    interactive = True
-    while interactive:
+    user_input = sys.argv[1].lower() if len(sys.argv) == 2 else get_input()
+    while user_input not in ("q", "quit", "exit"):
         as_of, raw_data = fetch_and_parse_data()
-        user_input, interactive = get_args(sys.argv)
-        if user_input.lower() in ("q", "quit", "exit"):
-            break
         data, meta_data = filter_data(raw_data, user_input)
         write_to_console(data, meta_data, as_of)
+        user_input = get_input()
 
 
 @cached(cache=TTLCache(maxsize=20000, ttl=600))
@@ -55,21 +53,20 @@ def fetch_and_parse_data():
     return as_of, raw_data
 
 
-def get_args(args: List[str]) -> Tuple[str, bool]:
-    """Pull args from command-line, or prompt user if no args."""
-    if len(args) == 2:
-        interactive = False
-        user_input = args[1]
-    else:
-        interactive = True
-        user_input = (
-            input("\nTop `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
-        )
+def get_input() -> str:
+    """Pull args from command-line, or prompt user if no args.
+
+    Keep the user input as a string, we'll type it later.
+    """
+    user_input = (
+        input("\nTop `n`, code(s), conference(s), or schools(s) [25]: ") or "25"
+    )
 
     # Convert All input to our numerical/str equivalent
-    if user_input.lower() == "all":
+    user_input = user_input.lower()
+    if user_input == "all":
         user_input = "0"
-    return user_input, interactive
+    return user_input
 
 
 def fetch_content(url: str) -> str:

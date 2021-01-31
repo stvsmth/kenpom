@@ -7,7 +7,7 @@ but it still feels funny to rely on that, especially in tests.
 
 from contextlib import contextmanager
 from io import StringIO
-from kenpom import parse_data, filter_data, write_to_console, NUM_SCHOOLS, get_args
+from kenpom import parse_data, filter_data, write_to_console, NUM_SCHOOLS
 from pathlib import Path
 import os
 import sys
@@ -261,12 +261,6 @@ def test_write_to_console_basic_conference():
 
     assert NUM_ACC_TEAMS == len(as_lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
     assert " Data includes 17 of 27 games played on Sunday, January 24 " == as_lines[18]
-
-
-def test_get_args_from_args():
-    assert get_args(["prog", "all"]) == ("0", False)
-    assert get_args(["prog", "7"]) == ("7", False)
-    assert get_args(["prog", "ucla,penn"]) == ("ucla,penn", False)
 
 
 @contextmanager
