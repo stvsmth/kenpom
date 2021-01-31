@@ -2,7 +2,7 @@
 
 ![tests](https://github.com/stvsmth/kenpom/workflows/tests/badge.svg)
 
-A little bit of Python to scrape the front page of the wonderfully useful
+A bit of Python to scrape the front page of the wonderfully useful
 [KenPom](https://kenpom.com) site for NCAA basketball statistics. This tool assumes
 you are comfortable on the command-line and basic Python tooling like `pip`. It's
 not really useful unless you like tinkering with Python.
@@ -44,138 +44,163 @@ conference is supplied, we'll perform a conference search.
 Only after checking for school code(s) and conference code(s) will we match on school
 name(s).
 
-You will probably forget this and never even care. But if your search returns more or
-fewer schools than you were expecting, this is probably why.
+You will probably forget this and never even care. However, if your search returns more
+or fewer schools than you were expecting, this might be why.
 
 ### Examples
 
 #### Interactive mode
 
-All the following examples will work in interactive mode as well.
+All the following examples will work in the interactive mode as well.
 
-To leave interactive mode type `q`, `quit`, or `exit`. For clarity we'll remove the
+To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove the
 `Data through` footer for the remaining examples.
 
     (kenpom) $ python kenpom.py
     Top `n`, code(s), conference(s), or schools(s) [25]: 5
+        Team   Code  Rank  Off / Def    Rec  Conf
+    ---------------------------------------------
+     Gonzaga   GONZ     1    1 /  11   17-0   WCC
+      Baylor    BAY     2    3 /   2   16-0   B12
+    Michigan   MICH     3    8 /   5   13-1   B10
+        Iowa   IOWA     4    2 /  97   12-4   B10
+     Houston    HOU     5   17 /   3   14-1  Amer
 
-          Kansas     KU     1   23-3  B12
-          Baylor    BAY     2   24-1  B12
-         Gonzaga   GONZ     3   26-1  WCC
-    San Diego St   SDSU     4   26-0  MWC
-            Duke   DUKE     5   22-4  ACC
-
-     Data includes 10 of 55 games played on Thursday, February 20
-
+     Data through games of Saturday, January 30  (2603 games)
 
     Top `n`, code(s), conference(s), or schools(s) [25]: quit
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by school code, 'cause typing is hard
     (kenpom) $ python kenpom.py umbc
+    Team   Code  Rank  Off / Def    Rec  Conf
+    -----------------------------------------
+    UMBC   UMBC   178  240 / 136   10-3    AE
 
-    UMBC   UMBC   275  12-14  AE
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Probably the most useful mode ... compare two teams that are playing
     (kenpom) $ python kenpom.py sfbk,sfpa
-
-    St Francis PA   SFPA   178   18-8  NEC
-    St Francis NY   SFBK   303  12-14  NEC
+             Team   Code  Rank  Off / Def    Rec  Conf
+    --------------------------------------------------
+    St Francis PA   SFPA   271  270 / 260    5-9   NEC
+    St Francis NY   SFBK   297  262 / 302    4-4   NEC
 
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Get the top `n` teams
     (kenpom) $ python kenpom.py 7
+         Team   Code  Rank  Off / Def    Rec  Conf
+    ----------------------------------------------
+      Gonzaga   GONZ     1    1 /  11   17-0   WCC
+       Baylor    BAY     2    3 /   2   16-0   B12
+     Michigan   MICH     3    8 /   5   13-1   B10
+         Iowa   IOWA     4    2 /  97   12-4   B10
+      Houston    HOU     5   17 /   3   14-1  Amer
+    Villanova   NOVA     6    4 /  38   11-1    BE
+     Illinois    ILL     7    7 /  18   11-5   B10
 
-           Kansas     KU     1   23-3  B12
-           Baylor    BAY     2   24-1  B12
-          Gonzaga   GONZ     3   26-1  WCC
-     San Diego St   SDSU     4   26-0  MWC
-             Duke   DUKE     5   22-4  ACC
-           Dayton    DAY     6   24-2  A10
-    West Virginia    WVU     7   19-7  B12
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Find all teams with `Valley` in the title ...
     (kenpom) $ python kenpom.py Valley
+                     Team   Code  Rank  Off / Def    Rec  Conf
+    ----------------------------------------------------------
+     UT Rio Grande Valley    RIO   222  299 / 144    8-3   WAC
+              Utah Valley    UVU   254  244 / 262    6-7   WAC
+    Mississippi Valley St   MVSU   357  357 / 357   0-14  SWAC
 
-     UT Rio Grande Valley    RIO   237  12-14  WAC
-              Utah Valley    UVU   263   9-17  WAC
-    Mississippi Valley St   MVSU   352   3-23  SWAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... include `southern` matches too
     (kenpom) $ python kenpom.py valley,SOUTHERN
+                     Team   Code  Rank  Off / Def    Rec  Conf
+    ----------------------------------------------------------
+            Southern Utah    SUU   196  130 / 291   11-3  BSky
+        Southern Illinois    SIU   209  197 / 241    7-6   MVC
+     UT Rio Grande Valley    RIO   222  299 / 144    8-3   WAC
+            Southern Miss    USM   246  305 / 181   7-10  CUSA
+           Texas Southern   TXSO   247  250 / 249    4-7  SWAC
+              Utah Valley    UVU   254  244 / 262    6-7   WAC
+         Georgia Southern   GASO   266  314 / 193   11-8    SB
+                 Southern    SOU   276  317 / 196    4-6  SWAC
+      Charleston Southern   CHSO   343  342 / 311   1-15  BSth
+    Mississippi Valley St   MVSU   357  357 / 357   0-14  SWAC
 
-            Southern Utah    SUU   151  14-11  BSky
-         Georgia Southern   GASO   153  16-11  SB
-        Southern Illinois    SIU   166  15-12  MVC
-     UT Rio Grande Valley    RIO   237  12-14  WAC
-            Southern Miss    USM   241   9-18  CUSA
-           Texas Southern   TXSO   252  12-13  SWAC
-              Utah Valley    UVU   263   9-17  WAC
-                 Southern    SOU   307  11-15  SWAC
-      Charleston Southern   CHSO   309  13-14  BSth
-    Mississippi Valley St   MVSU   352   3-23  SWAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Partial names matches, 'cause typing is hard ...
     (kenpom) $ python kenpom.py colo
+        Team   Code  Rank  Off / Def    Rec  Conf
+    ---------------------------------------------
+    Colorado   COLO    17   12 /  46   13-5   P12
 
-    Colorado   COLO    17   20-6  P12
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... Whoops, colo is a school code, so expand the search term.
     (kenpom) $ python kenpom.py color
+                 Team   Code  Rank  Off / Def    Rec  Conf
+    ------------------------------------------------------
+             Colorado   COLO    17   12 /  46   13-5   P12
+          Colorado St    CSU    67   70 /  67   12-4   MWC
+    Northern Colorado   UNCO   234  241 / 226    8-8  BSky
 
-             Colorado   COLO    17   20-6  P12
-    Northern Colorado   UNCO    82   17-8  BSky
-          Colorado St    CSU    94  18-10  MWC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Use quotes to find a name with spaces
     (kenpom) $ python kenpom.py "virginia tech"
+             Team   Code  Rank  Off / Def    Rec  Conf
+    --------------------------------------------------
+    Virginia Tech     VT    29   50 /  21   13-3   ACC
 
-    Virginia Tech     VT    95  15-11  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
-#### .. or single quotes ...
+#### ... or single quotes ...
     (kenpom) $ python kenpom.py 'NORTH DAKOTA'
+               Team   Code  Rank  Off / Def    Rec  Conf
+    ----------------------------------------------------
+    North Dakota St   NDSU   153  188 / 133   10-8   Sum
+       North Dakota    UND   319  311 / 292   5-14   Sum
 
-    North Dakota St   NDSU   122   20-7  Sum
-       North Dakota    UND   234  12-15  Sum
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or plus sign if you forget to start with a quote
     (kenpom) $ python kenpom.py Virginia+Tech
+             Team   Code  Rank  Off / Def    Rec  Conf
+    --------------------------------------------------
+    Virginia Tech     VT    29   50 /  21   13-3   ACC
 
-    Virginia Tech     VT    95  15-11  ACC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by a conference
     (kenpom) $ python kenpom.py meac
+                      Team   Code  Rank  Off / Def    Rec  Conf
+    -----------------------------------------------------------
+                Norfolk St   NORF   241  220 / 268    9-6  MEAC
+    North Carolina Central   NCCU   258  269 / 244    2-3  MEAC
+                 Morgan St   MORG   259  247 / 266    9-4  MEAC
+               Florida A&M   FAMU   299  325 / 219    2-7  MEAC
+        North Carolina A&T   NCAT   307  286 / 301    7-9  MEAC
+                    Howard    HOW   309  236 / 338    1-4  MEAC
+                 Coppin St   COPP   322  345 / 194   6-10  MEAC
+           Bethune Cookman   COOK   347  340 / 339    0-0  MEAC
+               Delaware St    DSU   352  335 / 354   0-11  MEAC
+    Maryland Eastern Shore   UMES   354  355 / 331    0-0  MEAC
+         South Carolina St   SCST   355  353 / 348   0-13  MEAC
 
-                Norfolk St   NORF   240  13-13  MEAC
-    North Carolina Central   NCCU   276  12-13  MEAC
-        North Carolina A&T   NCAT   280  13-14  MEAC
-           Bethune Cookman   COOK   294  13-13  MEAC
-                 Morgan St   MORG   311  14-14  MEAC
-               Florida A&M   FAMU   314  10-14  MEAC
-                 Coppin St   COPP   330   8-20  MEAC
-         South Carolina St   SCST   334  11-13  MEAC
-    Maryland Eastern Shore   UMES   346   5-21  MEAC
-               Delaware St    DSU   348   3-22  MEAC
-                    Howard    HOW   350   2-24  MEAC
 
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or several conferences
     (kenpom) $ python kenpom.py b12,ACC,B10
-
-            Kansas     KU     1   23-3  B12
-            Baylor    BAY     2   24-1  B12
-              Duke   DUKE     5   22-4  ACC
-            [snip]    ...   ...    ...  ...
-      Northwestern     NW   124   6-19  B10
-          Nebraska    NEB   136   7-18  B10
-    Boston College     BC   161  13-14  ACC
+              Team   Code  Rank  Off / Def    Rec  Conf
+    ---------------------------------------------------
+            Baylor    BAY     2    3 /   2   16-0   B12
+          Michigan   MICH     3    8 /   5   13-1   B10
+              Iowa   IOWA     4    2 /  97   12-4   B10
+          Illinois    ILL     7    7 /  18   11-5   B10
+          Virginia    UVA     9   11 /  16   11-3   ACC
+             Texas    TEX    10   19 /   9   11-3   B12
+            [snip]    ...   ...  ...   ....   ...   ...
+          Nebraska    NEB   124  134 / 119    4-8   B10
+           Iowa St    ISU   131  139 / 130    2-9   B12
+         Kansas St    KSU   183  191 / 203   5-13   B12

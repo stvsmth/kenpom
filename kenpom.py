@@ -6,8 +6,8 @@ TODO:
 * Clean up arg handling, but retain option for user_input on no args
   (essential for easy use in primary use case: iPhone/PyTo).
 * Use conf list for input validation? Maybe generate list via an arg (--list).
-* Provide configuration object to drive display of columns. We currently
-  only show rank, W/L, and conference.
+* Provide configuration object to drive display of columns? Default list is
+  pretty useful (lacks, tempo, luck, SOS).
 """
 from bs4 import BeautifulSoup, SoupStrainer
 from cachetools import cached, TTLCache
@@ -182,14 +182,33 @@ def write_to_console(
     data: KenPomDict, meta: MetaData, as_of: str
 ) -> Tuple[KenPomDict, MetaData]:
     """Dump the data to standard out."""
-    print()  # provide white-space around output
+
+    str_template = (
+        "{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} "
+        "{record:>6} {conf:>5}"
+    )
+    print(  # Header
+        str_template.format(
+            len=meta["max_name_len"],
+            alias="Code",
+            team="Team",
+            rank="Rank",
+            off_rank="Off",
+            def_rank="Def",
+            record="Rec",
+            conf="Conf",
+        )
+    )
+    print((meta["max_name_len"] + 37) * "-")
     for team in list(data.values()):
         print(
-            "{team:>{len}}  {alias:>5} {rank:>5} {record:>6}  {conf}".format(
+            str_template.format(
                 len=meta["max_name_len"],
                 alias=team.alias,
                 team=team.name,
                 rank=team.rank,
+                off_rank=team.off_rank,
+                def_rank=team.def_rank,
                 record=team.record,
                 conf=team.conf,
             )

@@ -15,7 +15,7 @@ import sys
 NUM_ACC_TEAMS = 15
 NUM_SEC_TEAMS = 14
 NUM_TEAMS_W_VALLEY_IN_NAME = 3
-NUM_HEADER_LINES = 1
+NUM_HEADER_LINES = 2
 NUM_FOOTER_LINES = 4
 
 
@@ -198,7 +198,7 @@ def test_write_to_console_all():
         out_text = out.getvalue()
     as_lines = out_text.split("\n")
 
-    assert " Mississippi Valley St   MVSU   357   0-13  SWAC" == as_lines[357]
+    assert as_lines[357].strip() == "Chicago St   CHIC   356  351 / 356    0-9   WAC"
 
 
 def test_write_to_console_top_5():
@@ -219,7 +219,7 @@ def test_write_to_console_top_5():
     # check the formatting of at least one line
     as_lines = out_text.split("\n")
 
-    assert "Villanova   NOVA     5   10-1  BE" == as_lines[5]
+    assert "Villanova   NOVA     5    4 /  32   10-1    BE" == as_lines[6]
 
 
 def test_write_to_console_multi_conference():
@@ -238,7 +238,7 @@ def test_write_to_console_multi_conference():
 
     # Make sure the formatting for at least one line is as expected.
     as_lines = out_text.split("\n")
-    assert "      Virginia    UVA     9   10-2  ACC" == as_lines[1]
+    assert "      Virginia    UVA     9   12 /  17   10-2   ACC" == as_lines[2]
 
 
 def test_write_to_console_basic_conference():
@@ -254,13 +254,13 @@ def test_write_to_console_basic_conference():
     # Check formatting, values, be sure we have at least one team ranked > #20
     # so we know that we're bypassing the intermittent headers include long (NC)
     # and short team names (Duke), which define width of output.
-    assert "      Virginia    UVA     9   10-2  ACC" == as_lines[1]
-    assert "    Florida St    FSU    15    9-2  ACC" == as_lines[2]
-    assert "          Duke   DUKE    32    5-5  ACC" == as_lines[3]
-    assert "North Carolina    UNC    34   10-5  ACC" == as_lines[4]
+    assert as_lines[2] == "      Virginia    UVA     9   12 /  17   10-2   ACC"
+    assert as_lines[3] == "    Florida St    FSU    15   11 /  33    9-2   ACC"
+    assert as_lines[4] == "          Duke   DUKE    32   33 /  49    5-5   ACC"
+    assert as_lines[5] == "North Carolina    UNC    34   62 /  22   10-5   ACC"
 
     assert NUM_ACC_TEAMS == len(as_lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
-    assert " Data includes 17 of 27 games played on Sunday, January 24 " == as_lines[17]
+    assert " Data includes 17 of 27 games played on Sunday, January 24 " == as_lines[18]
 
 
 def test_get_args_from_args():
