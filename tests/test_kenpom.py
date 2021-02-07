@@ -260,7 +260,7 @@ def test_write_to_console_basic_conference():
     assert as_lines[5] == "North Carolina    UNC    34   62 /  22   10-5   ACC"
 
     assert NUM_ACC_TEAMS == len(as_lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
-    assert " Data includes 17 of 27 games played on Sunday, January 24 " == as_lines[18]
+    assert "Data includes 17 of 27 games played on Sunday, January 24" == as_lines[18]
 
 
 @contextmanager

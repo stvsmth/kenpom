@@ -3,9 +3,7 @@
 """Scrape KenPom data for quick display.
 
 TODO:
-* Clean up arg handling, but retain option for user_input on no args
-  (essential for easy use in primary use case: iPhone/PyTo).
-* Use conf list for input validation? Maybe generate list via an arg (--list).
+* Use conf list for input validation? Maybe generate list via an arg (--conf-list).
 * Provide configuration object to drive display of columns? Default list is
   pretty useful (lacks, tempo, luck, SOS).
 """
@@ -21,25 +19,72 @@ from datastructures import (
 )
 from typing import List, Tuple
 from urllib.parse import unquote_plus
+import argparse
 import requests
-import sys
 
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 357  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
+HEADER_LEN = 37  # Number of `-` chars to print underneath the output header text
+CACHE_IN_SECS = 600
 
 
 def main():
     """Get args, fetch data, filter data, display data."""
-    user_input = sys.argv[1].lower() if len(sys.argv) == 2 else get_input()
+    args = parse_args()
+    user_input = args or get_input(args.indent)
+
+    if args.filter:
+        user_input = args.filter
+
     while user_input not in ("q", "quit", "exit"):
         as_of, raw_data = fetch_and_parse_data()
         data, meta_data = filter_data(raw_data, user_input)
-        write_to_console(data, meta_data, as_of)
-        user_input = get_input()
+        write_to_console(data, meta_data, as_of, args.indent)
+        user_input = "quit" if not args.filter else get_input(args.indent)
 
 
-@cached(cache=TTLCache(maxsize=20000, ttl=600))
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.usage = f"""
+    List, in KenPom ranked order, Division 1 men's college basketball
+    teams given some filter. Filters include top-n teams, conference,
+    team name, team alias (aka ESPN ticker symbol).
+
+    If no filter is provided, the program will go into a loop prompting
+    you for a new filter after each run. While running with in the loop
+    we only update data about every {CACHE_IN_SECS // 60} minutes.
+
+    Example filters:
+    7        List top 7 teams
+    acc,sec  List all teams from the ACC and SEC conferences
+    vt,woff  Compare teams by alias: Virginia Tech and Wofford
+    Valley   List all teams with `valley` in the school name
+
+    School names with spaces in them can be quoted or use the + sign in
+    lieu of a space. That is, both of the following will work.
+
+      "virginia tech",wofford
+      virginia+tech, wofford"""
+
+    parser.add_argument(
+        dest="filter",
+        nargs="?",
+        default="25",
+        help="one or more (comma-separated) search terms, defaults to 25",
+    )
+    parser.add_argument(
+        "--indent",
+        type=int,
+        metavar="N",
+        default=0,
+        help="offset console input by `N` spaces",
+    )
+
+    return parser.parse_args()
+
+
+@cached(cache=TTLCache(maxsize=20000, ttl=CACHE_IN_SECS))
 def fetch_and_parse_data():
     """Convenience method that allows us to cache results.
 
@@ -53,12 +98,16 @@ def fetch_and_parse_data():
     return as_of, raw_data
 
 
-def get_input() -> str:
+def get_input(indent: int) -> str:
     """Pull args from command-line, or prompt user if no args.
 
     Keep the user input as a string, we'll type it later.
     """
-    user_input = input("\nTop `n`, code(s), conference(s), or school(s) [25]: ") or "25"
+    left_pad = indent * " " if indent else ""
+    user_input = (
+        input(f"\n{left_pad}Top `n`, code(s), conference(s), or school(s) [25]: ")
+        or "25"
+    )
 
     # Convert All input to our numerical/str equivalent
     user_input = user_input.lower()
@@ -174,17 +223,20 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
 
 
 def write_to_console(
-    data: KenPomDict, meta: MetaData, as_of: str
+    data: KenPomDict, meta: MetaData, as_of: str, indent: int = 0
 ) -> Tuple[KenPomDict, MetaData]:
     """Dump the data to standard out."""
 
+    left_pad = indent * " " if indent else ""
     str_template = (
-        "{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} "
+        "{left_pad}{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} "
         "{record:>6} {conf:>5}"
     )
-    print(  # Header
+    # Header text ...
+    print(
         str_template.format(
             len=meta["max_name_len"],
+            left_pad=left_pad,
             alias="Code",
             team="Team",
             rank="Rank",
@@ -194,11 +246,15 @@ def write_to_console(
             conf="Conf",
         )
     )
-    print((meta["max_name_len"] + 37) * "-")
+    # -----------------------------------
+    print(left_pad + (meta["max_name_len"] + HEADER_LEN) * "-")
+
+    # Data ...
     for team in list(data.values()):
         print(
             str_template.format(
                 len=meta["max_name_len"],
+                left_pad=left_pad,
                 alias=team.alias,
                 team=team.name,
                 rank=team.rank,
@@ -208,7 +264,9 @@ def write_to_console(
                 conf=team.conf,
             )
         )
-    print("\n", as_of, "\n")
+    # Footer (as of date)
+    print(f"\n{left_pad}{as_of}\n")
+
     return data, meta
 
 
