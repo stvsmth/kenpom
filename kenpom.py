@@ -181,8 +181,7 @@ def _massage_school_name(school_name: str) -> str:
         int(name_candidate[-1])
 
         # Convert back to a string, minus the trailing number
-        name_only = " ".join(name_candidate[:-1])
-        school_name = school_name = name_only
+        school_name = " ".join(name_candidate[:-1])
     except ValueError:
         pass
     return school_name
