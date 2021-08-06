@@ -145,33 +145,47 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         # Grab just text vales from our html elements
         text_items = [e.text.strip() for e in elements if hasattr(e, "text")]
 
-        # Replace the trailing dot in `Boise St.` so right-justified text looks better
-        text_items[1] = school_name = text_items[1].replace(".", "")
-
-        # Oh, hey! Who knew, in NCAA tourney season KenPom puts the tourney seed into
-        # the school name. So, while text_items[1] will be "Gonzaga" most of the year,
-        # during (and after, till next season) text_items[1] will be "Gonzaga 1" since
-        # they're a #1 seed.
-
-        # convert NC State 1 to [NC, State, 1]
-        sample = school_name.split(" ")
-        try:
-            # Is the last element a number?
-            int(sample[-1])
-
-            # Convert back to a string, minus the trailing number
-            name_only = " ".join(sample[:-1])
-            text_items[1] = school_name = name_only
-        except ValueError:
-            pass
+        # Tidy up the school name for a variety of oddities, we are passing text_items
+        # into the constructor later, so be sure to update that.
+        text_items[1] = _massage_school_name(text_items[1])
 
         # Get alias to use as data key, allow user to search on this
-        school_alias = SCHOOL_DATA_BY_NAME[school_name.lower()]["alias"]
+        school_alias = SCHOOL_DATA_BY_NAME[text_items[1].lower()]["alias"]
         text_items.append(school_alias.upper())
 
         data[school_alias] = KenPom(*text_items)
 
     return data, as_of
+
+
+def _massage_school_name(school_name: str) -> str:
+    """Given a school name, massage the text for various peculiarities.
+
+    * Replace the trailing dot of school names like Boise St.
+    * Handle "Tourney Mode" where school names have their seed in the name.
+    """
+
+    # Replace the trailing dot in `Boise St.` so right-justified text looks better.
+    # ... trust me, it makes a difference.
+    school_name = school_name.replace(".", "")
+
+    # Who knew! During the NCAA tourney season KenPom puts the tourney seed into
+    # the school name. So, while text_items[1] will be "Gonzaga" most of the year,
+    # during (and after, till start of next season) text_items[1] will be
+    # "Gonzaga 1" since they're a #1 seed.
+
+    # convert "NC State 1" to ["NC", "State", "1"]
+    name_candidate = school_name.split(" ")
+    try:
+        # Is the last element a number?
+        int(name_candidate[-1])
+
+        # Convert back to a string, minus the trailing number
+        name_only = " ".join(name_candidate[:-1])
+        school_name = school_name = name_only
+    except ValueError:
+        pass
+    return school_name
 
 
 def _get_filters(user_input: str) -> Tuple[List[str], int]:
