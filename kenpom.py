@@ -78,7 +78,7 @@ def parse_args():
         type=int,
         metavar="N",
         default=0,
-        help="offset console input by `N` spaces",
+        help="offset console output by `N` spaces",
     )
 
     return parser.parse_args()
