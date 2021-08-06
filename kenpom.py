@@ -148,6 +148,23 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         # Replace the trailing dot in `Boise St.` so right-justified text looks better
         text_items[1] = school_name = text_items[1].replace(".", "")
 
+        # Oh, hey! Who knew, in NCAA tourney season KenPom puts the tourney seed into
+        # the school name. So, while text_items[1] will be "Gonzaga" most of the year,
+        # during (and after, till next season) text_items[1] will be "Gonzaga 1" since
+        # they're a #1 seed.
+
+        # convert NC State 1 to [NC, State, 1]
+        sample = school_name.split(" ")
+        try:
+            # Is the last element a number?
+            int(sample[-1])
+
+            # Convert back to a string, minus the trailing number
+            name_only = " ".join(sample[:-1])
+            text_items[1] = school_name = name_only
+        except ValueError:
+            pass
+
         # Get alias to use as data key, allow user to search on this
         school_alias = SCHOOL_DATA_BY_NAME[school_name.lower()]["alias"]
         text_items.append(school_alias.upper())
