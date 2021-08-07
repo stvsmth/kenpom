@@ -8,7 +8,6 @@
   read -r
   read -r
   # ... then each line, composed of the sample input and an explanatory comment
-  # TODO: Add a -1 or --once command that bypasses REPL.
   while IFS="_" read -r item || [ -n "$item" ]
   do
     IFS="_" read -r param comment <<< "${item}"
