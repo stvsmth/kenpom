@@ -1,3 +1,5 @@
+# <user-input>_<comment>
+# Emit #### for the level-four Markdown header
 umbc_#### Search by school code, 'cause typing is hard
 sfbk,sfpa_#### Probably the most useful mode ... compare two teams that are playing
 7_#### Get the top `n` teams
@@ -5,8 +7,8 @@ Valley_#### Find all teams with `Valley` in the title ...
 valley,SOUTHERN_#### ... include `southern` matches too
 colo_#### Partial names matches, 'cause typing is hard ...
 color_#### ... Whoops, colo is a school code, so expand the search term.
-"\virginia tech\"_#### Use quotes to find a name with spaces
-'NORTH DAKOTA'_#### .. or single quotes ...
+"virginia tech"_#### Use quotes to find a name with spaces
+'NORTH DAKOTA'_#### ... or single quotes ...
 Virginia+Tech_#### ... or plus sign if you forget to start with a quote
 meac_#### Search by a conference
 b12,ACC,B10_#### ... or several conferences

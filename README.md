@@ -37,7 +37,7 @@ simply print the top 25 teams. School codes and conference names must match exac
 School names will match on any string. See the examples below for the finer points.
 
 ### Search order precedence
-If any school code (KU, UK, OKLA, etc) is present, then the entire search will
+If any school code (KU, UK, OKLA, etc.) is present, then the entire search will
 proceed as a code search. Conference searches are executed with the same rules: if any
 conference is supplied, we'll perform a conference search.
 

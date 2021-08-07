@@ -41,7 +41,10 @@ def main():
         as_of, raw_data = fetch_and_parse_data()
         data, meta_data = filter_data(raw_data, user_input)
         write_to_console(data, meta_data, as_of, args.indent)
-        user_input = "quit" if not args.filter else get_input(args.indent)
+        if args.only_once:
+            user_input = "quit"
+        else:
+            user_input = "quit" if not args.filter else get_input(args.indent)
 
 
 def parse_args():
@@ -80,7 +83,12 @@ def parse_args():
         default=0,
         help="offset console output by `N` spaces",
     )
-
+    parser.add_argument(
+        "--once",
+        dest="only_once",
+        action="store_true",
+        help="run once and quit, bypassing the interactive loop",
+    )
     return parser.parse_args()
 
 
