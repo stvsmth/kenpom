@@ -58,7 +58,7 @@ def parse_args():
     Example filters:
     7        List top 7 teams
     acc,sec  List all teams from the ACC and SEC conferences
-    vt,woff  Compare teams by alias: Virginia Tech and Wofford
+    vt,wof   Compare teams by alias: Virginia Tech and Wofford
     Valley   List all teams with `valley` in the school name
 
     School names with spaces in them can be quoted or use the + sign in
