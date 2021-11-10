@@ -54,36 +54,36 @@ def test_parse_data():
     # column on one of these to ensure we have the correct mappings
     all_data = list(all_data.values())
     num_40 = all_data[39]
-    assert "LSU" == num_40.name
-    assert 40 == num_40.rank
+    assert num_40.name == "Saint Mary's"
+    assert num_40.rank == 40
 
     num_41 = all_data[40]
-    assert 41 == num_41.rank
-    assert "Rutgers" == num_41.name
-    assert "B10" == num_41.conf
-    assert "8-6" == num_41.record
-    assert 16.86 == num_41.eff_margin
-    assert 110.1 == num_41.offense
-    assert 55 == num_41.off_rank
-    assert 93.3 == num_41.defense
-    assert 40 == num_41.def_rank
+    assert num_41.rank == 41
+    assert num_41.name == "Arizona"
+    assert num_41.conf == "P12"
+    assert num_41.record == "1-0"
+    assert num_41.eff_margin == 15.79
+    assert num_41.offense == 107.3
+    assert num_41.off_rank == 49
+    assert num_41.defense == 91.5
+    assert num_41.def_rank == 38
 
-    assert 69.2 == num_41.tempo
-    assert 167 == num_41.tempo_rank
-    assert 0.013 == num_41.luck
-    assert 155 == num_41.luck_rank
+    assert num_41.tempo == 71.5
+    assert num_41.tempo_rank == 154
+    assert num_41.luck == 0.0
+    assert num_41.luck_rank == 1
 
-    assert 15.14 == num_41.sos_eff_margin
-    assert 5 == num_41.sos_eff_margin_rank
-    assert 111.8 == num_41.sos_off
-    assert 2 == num_41.sos_off_rank
-    assert 96.7 == num_41.sos_def
-    assert 30 == num_41.sos_def_rank
+    assert num_41.sos_eff_margin == -20.26
+    assert num_41.sos_eff_margin_rank == 217
+    assert num_41.sos_off == 88.9
+    assert num_41.sos_off_rank == 219
+    assert num_41.sos_def == 109.2
+    assert num_41.sos_def_rank == 215
 
-    assert -6.45 == num_41.sos_non_conf
-    assert 278 == num_41.sos_non_conf_rank
+    assert num_41.sos_non_conf == -20.26
+    assert num_41.sos_non_conf_rank == 217
     # Not in KenPom, we added when we parsed
-    assert "RUTG" == num_41.alias
+    assert num_41.alias == "ARIZ"
 
 
 def test_filter_data_conf_capitalization():
@@ -204,7 +204,10 @@ def test_write_to_console_all():
         out_text = out.getvalue()
     as_lines = out_text.split("\n")
 
-    assert as_lines[357].strip() == "Chicago St   CHIC   356  351 / 356    0-9   WAC"
+    assert (
+        as_lines[359].strip()
+        == "Mississippi Valley St   MVSU   358  358 / 358    0-1  SWAC"
+    )
 
 
 def test_write_to_console_top_5():
@@ -214,9 +217,9 @@ def test_write_to_console_top_5():
     assert len(data) == 5
     some_data = list(data.values())
 
-    # make sure we have some output where we expect
-    assert some_data[1].name == "Baylor"
-    assert some_data[3].name == "Iowa"
+    # make sure we have some output where we expect (offset by 1, so #2, #4)
+    assert some_data[1].name == "Michigan"
+    assert some_data[3].name == "Purdue"
 
     with captured_output() as (out, err):
         write_to_console(data, meta_data, as_of)
@@ -225,7 +228,7 @@ def test_write_to_console_top_5():
     # check the formatting of at least one line
     as_lines = out_text.split("\n")
 
-    assert "Villanova   NOVA     5    4 /  32   10-1    BE" == as_lines[6]
+    assert "Illinois    ILL     5   14 /   2    1-0   B10" == as_lines[6]
 
 
 def test_write_to_console_multi_conference():
@@ -236,15 +239,16 @@ def test_write_to_console_multi_conference():
 
     # Make sure some random values are where we expect
     some_data = list(data.values())
-    assert some_data[16].name == "Georgia Tech"
-    assert some_data[19].name == "NC State"
+    assert some_data[16].name == "Virginia"
+    assert some_data[19].name == "Georgia Tech"
+
     with captured_output() as (out, err):
         write_to_console(data, meta_data, as_of)
         out_text = out.getvalue()
 
     # Make sure the formatting for at least one line is as expected.
     as_lines = out_text.split("\n")
-    assert "      Virginia    UVA     9   12 /  17   10-2   ACC" == as_lines[2]
+    assert "      Virginia    UVA    56   93 /  32    0-1   ACC" == as_lines[18]
 
 
 def test_write_to_console_basic_conference():
@@ -260,13 +264,13 @@ def test_write_to_console_basic_conference():
     # Check formatting, values, be sure we have at least one team ranked > #20
     # so we know that we're bypassing the intermittent headers include long (NC)
     # and short team names (Duke), which define width of output.
-    assert as_lines[2] == "      Virginia    UVA     9   12 /  17   10-2   ACC"
-    assert as_lines[3] == "    Florida St    FSU    15   11 /  33    9-2   ACC"
-    assert as_lines[4] == "          Duke   DUKE    32   33 /  49    5-5   ACC"
-    assert as_lines[5] == "North Carolina    UNC    34   62 /  22   10-5   ACC"
+    assert as_lines[2] == "          Duke   DUKE     9   12 /  13    1-0   ACC"
+    assert as_lines[3] == "    Florida St    FSU    24   31 /  28    0-0   ACC"
+    assert as_lines[4] == "    Notre Dame     ND    27    7 /  94    0-0   ACC"
+    assert as_lines[5] == " Virginia Tech     VT    35   33 /  45    1-0   ACC"
 
     assert NUM_ACC_TEAMS == len(as_lines) - NUM_FOOTER_LINES - NUM_HEADER_LINES
-    assert "Data includes 17 of 27 games played on Sunday, January 24" == as_lines[18]
+    assert as_lines[18] == "Data through games of Tuesday, November 9  (184 games)"
 
 
 def test_massage_school_name():
