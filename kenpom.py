@@ -21,6 +21,9 @@ from typing import List, Tuple
 from urllib.parse import unquote_plus
 import argparse
 import requests
+import logging
+
+log = logging.getLogger(__name__)
 
 URL = "https://kenpom.com/"
 NUM_SCHOOLS = 358  # Total number of NCAA D1 schools
@@ -158,7 +161,9 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         text_items[1] = _massage_school_name(text_items[1])
 
         # Get alias to use as data key, allow user to search on this
-        school_alias = SCHOOL_DATA_BY_NAME[text_items[1].lower()]["alias"]
+        school_alias = SCHOOL_DATA_BY_NAME[text_items[1].lower()].get("alias", "")
+        if not school_alias:
+            log.info(f"Bad data? text_items content: {text_items}")
         text_items.append(school_alias.upper())
 
         data[school_alias] = KenPom(*text_items)
