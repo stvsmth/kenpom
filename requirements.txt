@@ -1,4 +1,4 @@
-beautifulsoup4>=4.7.0
+beautifulsoup4>=4.7.0,<4.10
 cachetools
 lxml
 requests>=2.21.0
