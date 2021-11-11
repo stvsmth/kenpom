@@ -161,12 +161,13 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         text_items[1] = _massage_school_name(text_items[1])
 
         # Get alias to use as data key, allow user to search on this
-        school_alias = SCHOOL_DATA_BY_NAME[text_items[1].lower()].get("alias", "")
-        if not school_alias:
+        school_data = SCHOOL_DATA_BY_NAME.get(text_items[1].lower(), {})
+        if school_data and school_data.get("alias"):
+            school_alias = school_data["alias"]
+            text_items.append(school_alias.upper())
+            data[school_alias] = KenPom(*text_items)
+        else:
             log.info(f"Bad data? text_items content: {text_items}")
-        text_items.append(school_alias.upper())
-
-        data[school_alias] = KenPom(*text_items)
 
     return data, as_of
 
