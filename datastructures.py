@@ -208,7 +208,7 @@ SCHOOL_DATA_BY_ALIAS = {
     "marq": {"conf": "be", "name": "marquette"},
     "mass": {"conf": "a10", "name": "massachusetts"},
     "mcns": {"conf": "slnd", "name": "mcneese st"},
-    "me": {"conf": "ae", "name": "maine"},
+    "maine": {"conf": "ae", "name": "maine"},
     "mem": {"conf": "amer", "name": "memphis"},
     "mer": {"conf": "sc", "name": "mercer"},
     "mia": {"conf": "acc", "name": "miami fl"},
