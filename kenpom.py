@@ -22,6 +22,7 @@ from urllib.parse import unquote_plus
 import argparse
 import requests
 import logging
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -315,4 +316,8 @@ def write_to_console(
 
 
 if __name__ == "__main__":
+    MAJ, MIN, *_ = sys.version_info
+    if MAJ == 3 and MIN < 8:
+        print("This requires Python 3.8 or higher.")
+        sys.exit(1)
     main()
