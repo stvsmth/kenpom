@@ -155,7 +155,9 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
             continue
 
         # Grab just text vales from our html elements
-        text_items = [e.text.strip() for e in elements if hasattr(e, "text")]
+        text_items = [
+            e.text.strip() for e in elements if hasattr(e, "text") if e.text.strip()
+        ]
 
         # Tidy up the school name for a variety of oddities, we are passing text_items
         # into the constructor later, so be sure to update that.
