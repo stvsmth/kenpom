@@ -4,8 +4,17 @@ lxml
 requests>=2.21.0
 
 # dev
+black
+mypy
 pre-commit
 pytest
 pytest-cov
-mypy
-black
+
+
+# CHANGE LOGS
+## Beautiful Soup
+#  https://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/view/head:/CHANGELOG
+## Requests
+#  https://github.com/psf/requests/blob/main/HISTORY.md
+## lxml
+#  https://lxml.de/  # No generic link, bottom of left-menu, third-from bottom
