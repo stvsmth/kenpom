@@ -130,7 +130,11 @@ def get_input(indent: int) -> str:
 
 def fetch_content(url: str) -> str:
     """Fetch the HTML content from the URL."""
-    response = requests.get(url)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) "
+        "Gecko/20100101 Firefox/102.0",
+    }
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.content.decode("utf-8")
 
