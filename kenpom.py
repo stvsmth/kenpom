@@ -36,10 +36,10 @@ CACHE_IN_SECS = 600
 def main():
     """Get args, fetch data, filter data, display data."""
     args = parse_args()
-    user_input = args or get_input(args.indent)
-
     if args.filter:
         user_input = args.filter
+    else:
+        user_input = get_input(args.indent)
 
     while user_input not in ("q", "quit", "exit"):
         as_of, raw_data = fetch_and_parse_data()
