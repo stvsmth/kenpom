@@ -1,6 +1,10 @@
 import dataclasses
 from typing import Dict, Any
 
+# * HOLY COW, why am I just now seeing this:
+#     https://www.espn.com/apis/devcenter/overview.html
+#     http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams?limit=400
+
 
 @dataclasses.dataclass
 class KenPom:
