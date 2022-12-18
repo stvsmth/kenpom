@@ -27,7 +27,7 @@ import sys
 log = logging.getLogger(__name__)
 
 URL = "https://kenpom.com/"
-NUM_SCHOOLS = 358  # Total number of NCAA D1 schools
+NUM_SCHOOLS = 363  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
 HEADER_LEN = 37  # Number of `-` chars to print underneath the output header text
 CACHE_IN_SECS = 600
