@@ -13,11 +13,11 @@ def test_derived_data():
     format we intended when we derive alternate structures from
     SCHOOL_DATA_BY_ALIAS
     """
-    assert SCHOOL_DATA_BY_ALIAS["wof"]["name"] == "wofford"
-    assert SCHOOL_DATA_BY_NAME["wofford"]["alias"] == "wof"
+    assert SCHOOL_DATA_BY_ALIAS['wof']['name'] == 'wofford'
+    assert SCHOOL_DATA_BY_NAME['wofford']['alias'] == 'wof'
     assert len(SCHOOL_DATA_BY_NAME) == len(SCHOOL_DATA_BY_ALIAS)
-    assert "vt" in SCHOOL_ALIASES
-    assert "acc" in CONF_NAMES
+    assert 'vt' in SCHOOL_ALIASES
+    assert 'acc' in CONF_NAMES
 
 
 def test_school_data_structure():

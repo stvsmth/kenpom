@@ -4,7 +4,8 @@ lxml
 requests>=2.21.0
 
 # dev
-black
+blue
+flake8
 mypy
 pre-commit
 pytest

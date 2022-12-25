@@ -26,7 +26,7 @@ import sys
 
 log = logging.getLogger(__name__)
 
-URL = "https://kenpom.com/"
+URL = 'https://kenpom.com/'
 NUM_SCHOOLS = 363  # Total number of NCAA D1 schools
 DATA_ROW_COL_COUNT = 22  # Number of data elements in tr elements w/ data we want
 HEADER_LEN = 37  # Number of `-` chars to print underneath the output header text
@@ -41,14 +41,14 @@ def main():
     else:
         user_input = get_input(args.indent)
 
-    while user_input not in ("q", "quit", "exit"):
+    while user_input not in ('q', 'quit', 'exit'):
         as_of, raw_data = fetch_and_parse_data()
         data, meta_data = filter_data(raw_data, user_input)
         write_to_console(data, meta_data, as_of, args.indent)
         if args.only_once:
-            user_input = "quit"
+            user_input = 'quit'
         else:
-            user_input = "quit" if not args.filter else get_input(args.indent)
+            user_input = 'quit' if not args.filter else get_input(args.indent)
 
 
 def parse_args():
@@ -75,23 +75,23 @@ def parse_args():
       virginia+tech, wofford"""
 
     parser.add_argument(
-        dest="filter",
-        nargs="?",
-        default="25",
-        help="one or more (comma-separated) search terms, defaults to 25",
+        dest='filter',
+        nargs='?',
+        default='25',
+        help='one or more (comma-separated) search terms, defaults to 25',
     )
     parser.add_argument(
-        "--indent",
+        '--indent',
         type=int,
-        metavar="N",
+        metavar='N',
         default=0,
-        help="offset console output by `N` spaces",
+        help='offset console output by `N` spaces',
     )
     parser.add_argument(
-        "--once",
-        dest="only_once",
-        action="store_true",
-        help="run once and quit, bypassing the interactive loop",
+        '--once',
+        dest='only_once',
+        action='store_true',
+        help='run once and quit, bypassing the interactive loop',
     )
     return parser.parse_args()
 
@@ -115,28 +115,24 @@ def get_input(indent: int) -> str:
 
     Keep the user input as a string, we'll type it later.
     """
-    left_pad = indent * " " if indent else ""
-    user_input = (
-        input(f"\n{left_pad}Top `n`, code(s), conference(s), or school(s) [25]: ")
-        or "25"
-    )
+    left_pad = indent * ' ' if indent else ''
+    user_input = input(f'\n{left_pad}Top `n`, code(s), conference(s), or school(s) [25]: ') or '25'
 
     # Convert All input to our numerical/str equivalent
     user_input = user_input.lower()
-    if user_input == "all":
-        user_input = "0"
+    if user_input == 'all':
+        user_input = '0'
     return user_input
 
 
 def fetch_content(url: str) -> str:
     """Fetch the HTML content from the URL."""
     headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) "
-        "Gecko/20100101 Firefox/102.0",
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) ' 'Gecko/20100101 Firefox/102.0',
     }
     response = requests.get(url, headers=headers)
     response.raise_for_status()
-    return response.content.decode("utf-8")
+    return response.content.decode('utf-8')
 
 
 def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
@@ -145,13 +141,13 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
     We also append one data item: `alias`. This allows us to search by the oft-
     used school alias (KU, UK, UMBC, aka score ticker symbol).
     """
-    as_of_html = BeautifulSoup(html_content, "lxml").find_all(class_="update")
-    as_of = as_of_html[0].text.strip() if as_of_html else ""
+    as_of_html = BeautifulSoup(html_content, 'lxml').find_all(class_='update')
+    as_of = as_of_html[0].text.strip() if as_of_html else ''
 
     # Join the total # of games and date info onto one line.
-    as_of = as_of.replace("\n", " ")
+    as_of = as_of.replace('\n', ' ')
 
-    soup = BeautifulSoup(html_content, "lxml", parse_only=SoupStrainer("tr"))
+    soup = BeautifulSoup(html_content, 'lxml', parse_only=SoupStrainer('tr'))
     data = dict()
     for elements in soup:
         # Rely on the fact that relevant rows have distinct, known number of items
@@ -159,9 +155,7 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
             continue
 
         # Grab just text vales from our html elements
-        text_items = [
-            e.text.strip() for e in elements if hasattr(e, "text") if e.text.strip()
-        ]
+        text_items = [e.text.strip() for e in elements if hasattr(e, 'text') if e.text.strip()]
 
         # Tidy up the school name for a variety of oddities, we are passing text_items
         # into the constructor later, so be sure to update that.
@@ -169,12 +163,12 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
 
         # Get alias to use as data key, allow user to search on this
         school_data = SCHOOL_DATA_BY_NAME.get(text_items[1].lower(), {})
-        if school_data and school_data.get("alias"):
-            school_alias = school_data["alias"]
+        if school_data and school_data.get('alias'):
+            school_alias = school_data['alias']
             text_items.append(school_alias.upper())
             data[school_alias] = KenPom(*text_items)
         else:
-            log.info(f"Bad data? text_items content: {text_items}")
+            log.info(f'Bad data? text_items content: {text_items}')
 
     return data, as_of
 
@@ -188,7 +182,7 @@ def _massage_school_name(school_name: str) -> str:
 
     # Replace the trailing dot in `Boise St.` so right-justified text looks better.
     # ... trust me, it makes a difference.
-    school_name = school_name.replace(".", "")
+    school_name = school_name.replace('.', '')
 
     # Who knew! During the NCAA tourney season KenPom puts the tourney seed into
     # the school name. So, while text_items[1] will be "Gonzaga" most of the year,
@@ -196,13 +190,13 @@ def _massage_school_name(school_name: str) -> str:
     # "Gonzaga 1" since they're a #1 seed.
 
     # convert "NC State 1" to ["NC", "State", "1"]
-    name_candidate = school_name.split(" ")
+    name_candidate = school_name.split(' ')
     try:
         # Is the last element a number?
         int(name_candidate[-1])
 
         # Convert back to a string, minus the trailing number
-        school_name = " ".join(name_candidate[:-1])
+        school_name = ' '.join(name_candidate[:-1])
     except ValueError:
         pass
     return school_name
@@ -220,14 +214,14 @@ def _get_filters(user_input: str) -> Tuple[List[str], int]:
     # to lower case and handle some input requirements for spaces.
     try:
         top_filter = int(user_input)
-        assert top_filter >= 0, "Top `n` must be zero or greater."
+        assert top_filter >= 0, 'Top `n` must be zero or greater.'
         return [], top_filter
     except ValueError:
         # Normalize the user input from command-line (or `input`)
-        input_as_list = [c.lower() for c in user_input.split(",")]
+        input_as_list = [c.lower() for c in user_input.split(',')]
 
         # Remove any quotes used in school name input
-        input_as_list = [u.replace('"', "").replace("'", "") for u in input_as_list]
+        input_as_list = [u.replace('"', '').replace("'", '') for u in input_as_list]
 
         # Decode any encoded input (mostly + for space) because sometimes we start
         # typing and don't want to go back and surround input with quotes
@@ -252,23 +246,19 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
         filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}
 
     else:  # full school name
-        filtered_data = {
-            k: v for k, v in data.items() for n in names if n in v.name.lower()
-        }
+        filtered_data = {k: v for k, v in data.items() for n in names if n in v.name.lower()}
 
     # Keep track of the longest school name. We'll need this to handle
     # right-justified formatting in our console output. If there's no
     # filtered_data then we have bogus input, so we need to guard against
     # the evil `None` rearing its ugly head.
-    max_name_len = (
-        max({len(v.name) for v in filtered_data.values()}) if filtered_data else 0
-    )
+    max_name_len = max({len(v.name) for v in filtered_data.values()}) if filtered_data else 0
 
     meta_data = {
-        "max_name_len": max_name_len,
-        "names": names,
-        "num_teams": len(filtered_data),
-        "top_filter": top_filter,
+        'max_name_len': max_name_len,
+        'names': names,
+        'num_teams': len(filtered_data),
+        'top_filter': top_filter,
     }
     return filtered_data, meta_data
 
@@ -278,33 +268,33 @@ def write_to_console(
 ) -> Tuple[KenPomDict, MetaData]:
     """Dump the data to standard out."""
 
-    left_pad = indent * " " if indent else ""
+    left_pad = indent * ' ' if indent else ''
     str_template = (
-        "{left_pad}{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} "
-        "{record:>6} {conf:>5}"
+        '{left_pad}{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} '
+        '{record:>6} {conf:>5}'
     )
     # Header text ...
     print(
         str_template.format(
-            len=meta["max_name_len"],
+            len=meta['max_name_len'],
             left_pad=left_pad,
-            alias="Code",
-            team="Team",
-            rank="Rank",
-            off_rank="Off",
-            def_rank="Def",
-            record="Rec",
-            conf="Conf",
+            alias='Code',
+            team='Team',
+            rank='Rank',
+            off_rank='Off',
+            def_rank='Def',
+            record='Rec',
+            conf='Conf',
         )
     )
     # -----------------------------------
-    print(left_pad + (meta["max_name_len"] + HEADER_LEN) * "-")
+    print(left_pad + (meta['max_name_len'] + HEADER_LEN) * '-')
 
     # Data ...
     for team in list(data.values()):
         print(
             str_template.format(
-                len=meta["max_name_len"],
+                len=meta['max_name_len'],
                 left_pad=left_pad,
                 alias=team.alias,
                 team=team.name,
@@ -316,14 +306,14 @@ def write_to_console(
             )
         )
     # Footer (as of date)
-    print(f"\n{left_pad}{as_of}\n")
+    print(f'\n{left_pad}{as_of}\n')
 
     return data, meta
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     MAJ, MIN, *_ = sys.version_info
     if MAJ == 3 and MIN < 8:
-        print("This requires Python 3.8 or higher.")
+        print('This requires Python 3.8 or higher.')
         sys.exit(1)
     main()
