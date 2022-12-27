@@ -2,23 +2,21 @@
 
 ![tests](https://github.com/stvsmth/kenpom/workflows/tests/badge.svg)
 
-A bit of Python to scrape the front page of the wonderfully useful
-[KenPom](https://kenpom.com) site for NCAA basketball statistics. This tool assumes
-you are comfortable on the command-line and basic Python tooling like `pip`. It's
-not really useful unless you like tinkering with Python.
+A bit of Python to scrape the front page of the wonderfully useful [KenPom](https://kenpom.com)
+site for NCAA basketball statistics. This tool assumes you are comfortable on the command-line and
+basic Python tooling like `pip`. It's not really useful unless you like tinkering with Python.
 
-Why scrape? Well, if your team rarely haunts the top 25 and/or your curious how your
-team ranks against other non-ranked teams, KenPom is one way to compare relative
-strengths.
+Why scrape? Well, if your team rarely haunts the top 25 and/or your curious how your team ranks
+against other non-ranked teams, KenPom is one way to compare relative strengths.
 
 This requires Python 3.8 or greater.
 
 ## Installation
 
-This is tool primarily uses [requests](https://requests.readthedocs.io/en/master/)
-and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/). While not
-required, using virtual environments is almost always the smart thing to do. Also, we
-use some pre-commit hooks to keep things formatted nicely and avoid some silly mistakes.
+This is tool primarily uses [requests](https://requests.readthedocs.io/en/master/) and
+[BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/). While not required, using
+virtual environments is almost always the smart thing to do. Also, we use some pre-commit hooks to
+keep things formatted nicely and avoid some silly mistakes.
 
 ```bash
 git clone https://github.com/stvsmth/kenpom.git
@@ -31,21 +29,22 @@ pytest tests
 
 ## Usage
 
-You can pass filtering options in via command-line arguments or as prompted. We'll
-filter on conference(s), school name(s), or the top `n` schools. With no input we
-simply print the top 25 teams. School codes and conference names must match exactly.
-School names will match on any string. See the examples below for the finer points.
+You can pass filtering options in via command-line arguments or as prompted. We'll filter on
+conference(s), school name(s), or the top `n` schools. With no input we simply print the top 25
+teams. School abbreviations and conference names must match exactly. School names will match on any
+string. See the examples below for the finer points.
 
 ### Search order precedence
-If any school code (KU, UK, OKLA, etc.) is present, then the entire search will
-proceed as a code search. Conference searches are executed with the same rules: if any
-conference is supplied, we'll perform a conference search.
 
-Only after checking for school code(s) and conference code(s) will we match on school
-name(s).
+If any school abbreviation (KU, UK, OKLA, etc.) is present, then the entire search will proceed as
+a abbreviation search. Conference searches are executed with the same rules: if any conference is
+supplied, we'll perform a conference search.
 
-You will probably forget this and never even care. However, if your search returns more
-or fewer schools than you were expecting, this might be why.
+Only after checking for school abbreviation(s) and conference abbreviation(s) will we match on
+school name(s).
+
+You will probably forget this and never even care. However, if your search returns more or fewer
+schools than you were expecting, this might be why.
 
 ### Examples
 
@@ -57,8 +56,8 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 `Data through` footer for the remaining examples.
 
     (kenpom) $ python kenpom.py
-    Top `n`, code(s), conference(s), or school(s) [25]: 5
-        Team   Code  Rank  Off / Def    Rec  Conf
+    Top `n`, abbrev(s), conference(s), or school(s) [25]: 5
+        Team Abbrev  Rank  Off / Def    Rec  Conf
     ---------------------------------------------
      Gonzaga   GONZ     1    1 /  11   17-0   WCC
       Baylor    BAY     2    3 /   2   16-0   B12
@@ -68,12 +67,12 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 
      Data through games of Saturday, January 30  (2603 games)
 
-    Top `n`, code(s), conference(s), or school(s) [25]: quit
+    Top `n`, abbrev(s), conference(s), or school(s) [25]: quit
 
 [//]: # (Edit doc-gen.txt rather than the following content)
-#### Search by school code, 'cause typing is hard
+#### Search by school abbreviation, 'cause typing is hard
     (kenpom) $ python kenpom.py umbc
-    Team   Code  Rank  Off / Def    Rec  Conf
+    Team Abbrev  Rank  Off / Def    Rec  Conf
     -----------------------------------------
     UMBC   UMBC   178  240 / 136   10-3    AE
 
@@ -81,7 +80,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Probably the most useful mode ... compare two teams that are playing
     (kenpom) $ python kenpom.py sfbk,sfpa
-             Team   Code  Rank  Off / Def    Rec  Conf
+             Team Abbrev  Rank  Off / Def    Rec  Conf
     --------------------------------------------------
     St Francis PA   SFPA   271  270 / 260    5-9   NEC
     St Francis NY   SFBK   297  262 / 302    4-4   NEC
@@ -90,7 +89,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Get the top `n` teams
     (kenpom) $ python kenpom.py 7
-         Team   Code  Rank  Off / Def    Rec  Conf
+         Team Abbrev  Rank  Off / Def    Rec  Conf
     ----------------------------------------------
       Gonzaga   GONZ     1    1 /  11   17-0   WCC
        Baylor    BAY     2    3 /   2   16-0   B12
@@ -104,7 +103,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Find all teams with `Valley` in the title ...
     (kenpom) $ python kenpom.py Valley
-                     Team   Code  Rank  Off / Def    Rec  Conf
+                     Team Abbrev  Rank  Off / Def    Rec  Conf
     ----------------------------------------------------------
      UT Rio Grande Valley    RIO   222  299 / 144    8-3   WAC
               Utah Valley    UVU   254  244 / 262    6-7   WAC
@@ -114,7 +113,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... include `southern` matches too
     (kenpom) $ python kenpom.py valley,SOUTHERN
-                     Team   Code  Rank  Off / Def    Rec  Conf
+                     Team Abbrev  Rank  Off / Def    Rec  Conf
     ----------------------------------------------------------
             Southern Utah    SUU   196  130 / 291   11-3  BSky
         Southern Illinois    SIU   209  197 / 241    7-6   MVC
@@ -131,15 +130,15 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Partial names matches, 'cause typing is hard ...
     (kenpom) $ python kenpom.py colo
-        Team   Code  Rank  Off / Def    Rec  Conf
+        Team Abbrev  Rank  Off / Def    Rec  Conf
     ---------------------------------------------
     Colorado   COLO    17   12 /  46   13-5   P12
 
 
 [//]: # (Edit doc-gen.txt rather than the following content)
-#### ... Whoops, colo is a school code, so expand the search term.
+#### ... Whoops, colo is a school abbreviation, so expand the search term.
     (kenpom) $ python kenpom.py color
-                 Team   Code  Rank  Off / Def    Rec  Conf
+                 Team Abbrev  Rank  Off / Def    Rec  Conf
     ------------------------------------------------------
              Colorado   COLO    17   12 /  46   13-5   P12
           Colorado St    CSU    67   70 /  67   12-4   MWC
@@ -149,7 +148,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Use quotes to find a name with spaces
     (kenpom) $ python kenpom.py "virginia tech"
-             Team   Code  Rank  Off / Def    Rec  Conf
+             Team Abbrev  Rank  Off / Def    Rec  Conf
     --------------------------------------------------
     Virginia Tech     VT    29   50 /  21   13-3   ACC
 
@@ -157,7 +156,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or single quotes ...
     (kenpom) $ python kenpom.py 'NORTH DAKOTA'
-               Team   Code  Rank  Off / Def    Rec  Conf
+               Team Abbrev  Rank  Off / Def    Rec  Conf
     ----------------------------------------------------
     North Dakota St   NDSU   153  188 / 133   10-8   Sum
        North Dakota    UND   319  311 / 292   5-14   Sum
@@ -166,7 +165,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or plus sign if you forget to start with a quote
     (kenpom) $ python kenpom.py Virginia+Tech
-             Team   Code  Rank  Off / Def    Rec  Conf
+             Team Abbrev  Rank  Off / Def    Rec  Conf
     --------------------------------------------------
     Virginia Tech     VT    29   50 /  21   13-3   ACC
 
@@ -174,7 +173,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### Search by a conference
     (kenpom) $ python kenpom.py meac
-                      Team   Code  Rank  Off / Def    Rec  Conf
+                      Team Abbrev  Rank  Off / Def    Rec  Conf
     -----------------------------------------------------------
                 Norfolk St   NORF   241  220 / 268    9-6  MEAC
     North Carolina Central   NCCU   258  269 / 244    2-3  MEAC
@@ -192,7 +191,7 @@ To leave interactive mode type `q`, `quit`, or `exit`. For clarity, we'll remove
 [//]: # (Edit doc-gen.txt rather than the following content)
 #### ... or several conferences
     (kenpom) $ python kenpom.py b12,ACC,B10
-              Team   Code  Rank  Off / Def    Rec  Conf
+              Team Abbrev  Rank  Off / Def    Rec  Conf
     ---------------------------------------------------
             Baylor    BAY     2    3 /   2   16-0   B12
           Michigan   MICH     3    8 /   5   13-1   B10

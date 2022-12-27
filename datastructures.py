@@ -31,9 +31,9 @@ class KenPom:
     sos_def_rank: int
     sos_non_conf: float
     sos_non_conf_rank: int
-    # NOTE: alias is NOT in source KenPom data.
+    # NOTE: abbrev is NOT in source KenPom data.
     # We append it so we can do searches based on score-ticker names (KU, VT, UVA, etc).
-    alias: str
+    abbrev: str
 
     def __post_init__(self):
         """Type incoming data.
@@ -50,12 +50,12 @@ class KenPom:
 KenPomDict = Dict[str, KenPom]
 MetaData = Dict[str, Any]
 
-# We are using the team alias (code) as defined in the ESPN tickers.
+# We are using the team abbrev as defined in the ESPN tickers.
 # TODO: Write a auditor/scraper to find these, right now I have to manually update the
 #  3-6 changes we see each season as teams go up/down into D1 (money, sanctions, etc)
 # https://www.espn.com/mens-college-basketball/teams and then click on any opponent of
-# missing team to see their alias.
-SCHOOL_DATA_BY_ALIAS = {
+# missing team to see their abbrev.
+SCHOOL_DATA_BY_ABBREV = {
     'aamu': {'conf': 'swac', 'name': 'alabama a&m'},
     'acu': {'conf': 'slnd', 'name': 'abilene christian'},
     'afa': {'conf': 'mwc', 'name': 'air force'},
@@ -424,9 +424,9 @@ SCHOOL_DATA_BY_ALIAS = {
 }
 
 SCHOOL_DATA_BY_NAME = {
-    s['name']: {'conf': s['conf'], 'alias': k} for k, s in SCHOOL_DATA_BY_ALIAS.items()
+    s['name']: {'conf': s['conf'], 'abbrev': k} for k, s in SCHOOL_DATA_BY_ABBREV.items()
 }
 
-SCHOOL_ALIASES = set(SCHOOL_DATA_BY_ALIAS.keys())
-SCHOOL_NAMES = {s['name'] for s in SCHOOL_DATA_BY_ALIAS.values()}
-CONF_NAMES = {s['conf'] for s in SCHOOL_DATA_BY_ALIAS.values()}
+SCHOOL_ABBREVS = set(SCHOOL_DATA_BY_ABBREV.keys())
+SCHOOL_NAMES = {s['name'] for s in SCHOOL_DATA_BY_ABBREV.values()}
+CONF_NAMES = {s['conf'] for s in SCHOOL_DATA_BY_ABBREV.values()}

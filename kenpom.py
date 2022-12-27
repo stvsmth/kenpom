@@ -15,7 +15,7 @@ from datastructures import (
     MetaData,
     CONF_NAMES,
     SCHOOL_DATA_BY_NAME,
-    SCHOOL_DATA_BY_ALIAS,
+    SCHOOL_DATA_BY_ABBREV,
 )
 from typing import List, Tuple
 from urllib.parse import unquote_plus
@@ -56,7 +56,7 @@ def parse_args():
     parser.usage = f"""
     List, in KenPom ranked order, Division 1 men's college basketball
     teams given some filter. Filters include top-n teams, conference,
-    team name, team alias (aka ESPN ticker symbol).
+    team name, team abbrev (aka ESPN ticker symbol).
 
     If no filter is provided, the program will go into a loop prompting
     you for a new filter after each run. While running with in the loop
@@ -65,7 +65,7 @@ def parse_args():
     Example filters:
     7        List top 7 teams
     acc,sec  List all teams from the ACC and SEC conferences
-    vt,wof   Compare teams by alias: Virginia Tech and Wofford
+    vt,wof   Compare teams by abbrev: Virginia Tech and Wofford
     Valley   List all teams with `valley` in the school name
 
     School names with spaces in them can be quoted or use the + sign in
@@ -116,7 +116,9 @@ def get_input(indent: int) -> str:
     Keep the user input as a string, we'll type it later.
     """
     left_pad = indent * ' ' if indent else ''
-    user_input = input(f'\n{left_pad}Top `n`, code(s), conference(s), or school(s) [25]: ') or '25'
+    user_input = (
+        input(f'\n{left_pad}Top `n`, abbrev(s), conference(s), or school(s) [25]: ') or '25'
+    )
 
     # Convert All input to our numerical/str equivalent
     user_input = user_input.lower()
@@ -138,8 +140,8 @@ def fetch_content(url: str) -> str:
 def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
     """Parse raw HTML into a more useful data structure.
 
-    We also append one data item: `alias`. This allows us to search by the oft-
-    used school alias (KU, UK, UMBC, aka score ticker symbol).
+    We also append one data item: `abbrev`. This allows us to search by the oft-
+    used school abbrev (KU, UK, UMBC, aka score ticker symbol).
     """
     as_of_html = BeautifulSoup(html_content, 'lxml').find_all(class_='update')
     as_of = as_of_html[0].text.strip() if as_of_html else ''
@@ -161,12 +163,12 @@ def parse_data(html_content: str) -> Tuple[KenPomDict, str]:
         # into the constructor later, so be sure to update that.
         text_items[1] = _massage_school_name(text_items[1])
 
-        # Get alias to use as data key, allow user to search on this
+        # Get abbrev to use as data key, allow user to search on this
         school_data = SCHOOL_DATA_BY_NAME.get(text_items[1].lower(), {})
-        if school_data and school_data.get('alias'):
-            school_alias = school_data['alias']
-            text_items.append(school_alias.upper())
-            data[school_alias] = KenPom(*text_items)
+        if school_data and school_data.get('abbrev'):
+            school_abbrev = school_data['abbrev']
+            text_items.append(school_abbrev.upper())
+            data[school_abbrev] = KenPom(*text_items)
         else:
             log.info(f'Bad data? text_items content: {text_items}')
 
@@ -210,7 +212,7 @@ def _get_filters(user_input: str) -> Tuple[List[str], int]:
     """
     # IF we're filtering by N, we only have one parameter, and it should convert
     # to an int cleanly; otherwise, we're dealing with a list (possibly of 1 item)
-    # of strings representing names (conf, school, or alias). Normalize that data
+    # of strings representing names (conf, school, or abbrev). Normalize that data
     # to lower case and handle some input requirements for spaces.
     try:
         top_filter = int(user_input)
@@ -223,7 +225,7 @@ def _get_filters(user_input: str) -> Tuple[List[str], int]:
         # Remove any quotes used in school name input
         input_as_list = [u.replace('"', '').replace("'", '') for u in input_as_list]
 
-        # Decode any encoded input (mostly + for space) because sometimes we start
+        # Decode any enabbrevd input (mostly + for space) because sometimes we start
         # typing and don't want to go back and surround input with quotes
         input_as_list = [unquote_plus(i) for i in input_as_list]
         return input_as_list, -1
@@ -239,8 +241,8 @@ def filter_data(data: KenPomDict, user_input: str) -> Tuple[KenPomDict, MetaData
     elif top_filter > 0:
         filtered_data = {k: v for k, v in data.items() if v.rank <= top_filter}
 
-    elif aliases := SCHOOL_DATA_BY_ALIAS.keys() & set(names):
-        filtered_data = {k: v for k, v in data.items() if k in aliases}
+    elif abbrevs := SCHOOL_DATA_BY_ABBREV.keys() & set(names):
+        filtered_data = {k: v for k, v in data.items() if k in abbrevs}
 
     elif conf_names := CONF_NAMES.intersection(set(names)):
         filtered_data = {k: v for k, v in data.items() if v.conf.lower() in conf_names}
@@ -270,7 +272,7 @@ def write_to_console(
 
     left_pad = indent * ' ' if indent else ''
     str_template = (
-        '{left_pad}{team:>{len}}  {alias:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} '
+        '{left_pad}{team:>{len}}  {abbrev:>5} {rank:>5}  {off_rank:>3} /{def_rank:>4} '
         '{record:>6} {conf:>5}'
     )
     # Header text ...
@@ -278,7 +280,7 @@ def write_to_console(
         str_template.format(
             len=meta['max_name_len'],
             left_pad=left_pad,
-            alias='Code',
+            abbrev='Abbrev',
             team='Team',
             rank='Rank',
             off_rank='Off',
@@ -296,7 +298,7 @@ def write_to_console(
             str_template.format(
                 len=meta['max_name_len'],
                 left_pad=left_pad,
-                alias=team.alias,
+                abbrev=team.abbrev,
                 team=team.name,
                 rank=team.rank,
                 off_rank=team.off_rank,
