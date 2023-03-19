@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, Any
+from typing import Any, Dict
 
 # * HOLY COW, why am I just now seeing this:
 #     https://www.espn.com/apis/devcenter/overview.html

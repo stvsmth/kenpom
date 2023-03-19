@@ -1,8 +1,8 @@
 from datastructures import (
-    SCHOOL_DATA_BY_NAME,
-    SCHOOL_DATA_BY_ABBREV,
     CONF_NAMES,
     SCHOOL_ABBREVS,
+    SCHOOL_DATA_BY_ABBREV,
+    SCHOOL_DATA_BY_NAME,
 )
 
 

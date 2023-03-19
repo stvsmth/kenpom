@@ -7,16 +7,17 @@ but it still feels funny to rely on that, especially in tests.
 
 from contextlib import contextmanager
 from io import StringIO
+import os
+from pathlib import Path
+import sys
+
 from kenpom import (
-    parse_data,
-    filter_data,
-    write_to_console,
     NUM_SCHOOLS,
     _massage_school_name,
+    filter_data,
+    parse_data,
+    write_to_console,
 )
-from pathlib import Path
-import os
-import sys
 
 NUM_ACC_TEAMS = 15
 NUM_SEC_TEAMS = 14

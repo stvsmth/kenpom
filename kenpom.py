@@ -7,22 +7,24 @@ TODO:
 * Provide configuration object to drive display of columns? Default list is
   pretty useful (lacks, tempo, luck, SOS).
 """
+import argparse
+import logging
+import sys
+from typing import List, Tuple
+from urllib.parse import unquote_plus
+
 from bs4 import BeautifulSoup, SoupStrainer
-from cachetools import cached, TTLCache
+from cachetools import TTLCache, cached
+import requests
+
 from datastructures import (
+    CONF_NAMES,
     KenPom,
     KenPomDict,
     MetaData,
-    CONF_NAMES,
-    SCHOOL_DATA_BY_NAME,
     SCHOOL_DATA_BY_ABBREV,
+    SCHOOL_DATA_BY_NAME,
 )
-from typing import List, Tuple
-from urllib.parse import unquote_plus
-import argparse
-import requests
-import logging
-import sys
 
 log = logging.getLogger(__name__)
 
